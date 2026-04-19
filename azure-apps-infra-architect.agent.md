@@ -6,31 +6,27 @@ tools:
   - search
   - web
   - agent
-  - mcp_com_microsoft_appservice/*
-  - mcp_com_microsoft_containerapps/*
-  - mcp_com_microsoft_aks/*
-  - mcp_com_microsoft_functionapp/*
-  - mcp_com_microsoft_functions/*
-  - mcp_com_microsoft_compute/*
-  - mcp_com_microsoft_keyvault/*
-  - mcp_com_microsoft_wellarchitectedframework/*
-  - mcp_com_microsoft_pricing/*
-  - mcp_com_microsoft_monitor/*
-  - mcp_com_microsoft_documentation/*
-  - mcp_microsoftdocs_microsoft_docs_search
-  - mcp_microsoftdocs_microsoft_docs_fetch
-  - mcp_microsoftdocs_microsoft_code_sample_search
+  - com.microsoft/azure/appservice
+  - com.microsoft/azure/containerapps
+  - com.microsoft/azure/aks
+  - com.microsoft/azure/functionapp
+  - com.microsoft/azure/functions
+  - com.microsoft/azure/compute
+  - com.microsoft/azure/keyvault
+  - com.microsoft/azure/wellarchitectedframework
+  - com.microsoft/azure/pricing
+  - com.microsoft/azure/monitor
+  - com.microsoft/azure/documentation
+  - microsoftdocs/mcp/*
 agents:
-  - azure-terraform-author
-  - azure-bicep-author
-  - azure-networking-engineer
-  - azure-monitoring-engineer
-  - security-compliance-analyst
-  - cost-optimization-specialist
+  - Azure Terraform Author
+  - Bicep Code Author
+  - Azure Network Engineer
+  - "Azure Monitoring & Observability Engineer"
+  - "Security & Compliance Analyst"
+  - Cost Optimization Specialist
 argument-hint: "Describe the application workload, its requirements, and any constraints"
-model:
-  - "Claude Opus 4 (copilot)"
-  - "Claude Sonnet 4 (copilot)"
+model: "Claude Sonnet 4.6 (copilot)"
 handoffs:
   - label: Write Terraform
     agent: azure-terraform-author

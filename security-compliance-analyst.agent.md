@@ -11,20 +11,16 @@ name: Security & Compliance Analyst
 tools:
   - read
   - search
-  - webSearch
+  - web
   - agent
-  - mcp_microsoftdocs_microsoft_docs_search
-  - mcp_microsoftdocs_microsoft_docs_fetch
-  - mcp_microsoftdocs_microsoft_code_sample_search
+  - microsoftdocs/mcp/*
 agents:
-  - entra-id-specialist
-  - azure-network-engineer
-  - azure-monitoring-engineer
-  - azure-database-specialist
-  - azure-apps-infra-architect
-model:
-  - Claude Opus 4 (copilot)
-  - Claude Sonnet 4 (copilot)
+  - Entra ID Specialist
+  - Azure Network Engineer
+  - "Azure Monitoring & Observability Engineer"
+  - Azure Database Specialist
+  - "Azure Apps & Infra Architect"
+model: "Claude Sonnet 4.6 (copilot)"
 argument-hint: >-
   Describe the architecture, design, or configuration to review for security and compliance
 ---

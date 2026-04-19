@@ -12,22 +12,18 @@ tools:
   - search
   - web
   - agent
-  - mcp_com_microsoft_compute
-  - mcp_com_microsoft_appservice
-  - mcp_com_microsoft_containerapps
-  - mcp_com_microsoft_aks
-  - mcp_com_microsoft_functions
-  - mcp_com_microsoft_monitor
-  - mcp_com_microsoft_pricing
-  - mcp_com_microsoft_wellarchitectedframework
-  - mcp_microsoftdocs_microsoft_docs_search
-  - mcp_microsoftdocs_microsoft_docs_fetch
-  - mcp_microsoftdocs_microsoft_code_sample_search
-model:
-  - "Claude Opus 4 (copilot)"
-  - "Claude Sonnet 4 (copilot)"
+  - com.microsoft/azure/compute
+  - com.microsoft/azure/appservice
+  - com.microsoft/azure/containerapps
+  - com.microsoft/azure/aks
+  - com.microsoft/azure/functions
+  - com.microsoft/azure/monitor
+  - com.microsoft/azure/pricing
+  - com.microsoft/azure/wellarchitectedframework
+  - microsoftdocs/mcp/*
+model: "Claude Sonnet 4.6 (copilot)"
 agents:
-  - azure-apps-infra-architect
+  - "Azure Apps & Infra Architect"
 argument-hint: Describe the workload, traffic pattern, and requirements
 ---
 

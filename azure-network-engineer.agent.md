@@ -7,15 +7,11 @@ tools:
   - search
   - web
   - agent
-  - mcp_microsoftdocs_microsoft_docs_search
-  - mcp_microsoftdocs_microsoft_docs_fetch
-  - mcp_microsoftdocs_microsoft_code_sample_search
+  - microsoftdocs/mcp/*
 agents:
-  - azure-apps-infra-architect
-  - landing-zone-specialist
-model:
-  - "Claude Opus 4 (copilot)"
-  - "Claude Sonnet 4 (copilot)"
+  - "Azure Apps & Infra Architect"
+  - Landing Zone Specialist
+model: "Claude Sonnet 4.6 (copilot)"
 argument-hint: "Describe the network topology, connectivity, or security challenge"
 ---
 

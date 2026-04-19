@@ -12,20 +12,17 @@ name: Identity & Productivity Lead
 tools:
   - read
   - search
-  - webSearch
+  - web
   - agent
   - todo
-  - mcp_microsoftdocs_microsoft_docs_search
-  - mcp_microsoftdocs_microsoft_docs_fetch
+  - microsoftdocs/mcp/*
 agents:
-  - entra-id-specialist
-  - teams-admin
-  - m365-engineer
-  - cost-optimization-specialist
-  - security-compliance-analyst
-model:
-  - Claude Opus 4 (copilot)
-  - Claude Sonnet 4 (copilot)
+  - Entra ID Specialist
+  - Microsoft Teams Administrator
+  - Microsoft 365 Engineer
+  - Cost Optimization Specialist
+  - "Security & Compliance Analyst"
+model: "Claude Opus 4.6 (copilot)"
 argument-hint: >-
   Describe the M365 platform challenge, identity design question, or collaboration
   governance need

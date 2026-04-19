@@ -6,20 +6,16 @@ tools:
   - search
   - web
   - agent
-  - mcp_com_microsoft_appservice
-  - mcp_com_microsoft_storage
-  - mcp_com_microsoft_keyvault
-  - mcp_com_microsoft_monitor
-  - mcp_com_microsoft_pricing
-  - mcp_com_microsoft_wellarchitectedframework
-  - mcp_microsoftdocs_microsoft_docs_search
-  - mcp_microsoftdocs_microsoft_docs_fetch
-  - mcp_microsoftdocs_microsoft_code_sample_search
-model:
-  - Claude Opus 4 (copilot)
-  - Claude Sonnet 4 (copilot)
+  - com.microsoft/azure/appservice
+  - com.microsoft/azure/storage
+  - com.microsoft/azure/keyvault
+  - com.microsoft/azure/monitor
+  - com.microsoft/azure/pricing
+  - com.microsoft/azure/wellarchitectedframework
+  - microsoftdocs/mcp/*
+model: "Claude Sonnet 4.6 (copilot)"
 agents:
-  - azure-apps-infra-architect
+  - "Azure Apps & Infra Architect"
 ---
 
 # Role

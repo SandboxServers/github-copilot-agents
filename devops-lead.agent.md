@@ -12,23 +12,20 @@ name: DevOps Lead
 tools:
   - read
   - search
-  - webSearch
+  - web
   - agent
   - todo
-  - mcp_microsoftdocs_microsoft_docs_search
-  - mcp_microsoftdocs_microsoft_docs_fetch
+  - microsoftdocs/mcp/*
 agents:
-  - azure-pipelines-architect
-  - github-actions-architect
-  - ado-github-migration
-  - azure-terraform-author
-  - cost-optimization-specialist
-  - security-compliance-analyst
-  - testing-validation-engineer
-  - retrospective-agent
-model:
-  - Claude Opus 4 (copilot)
-  - Claude Sonnet 4 (copilot)
+  - Azure Pipelines Architect
+  - GitHub Actions Architect
+  - "Azure Pipelines -> GitHub Actions Migration Specialist"
+  - Azure Terraform Author
+  - Cost Optimization Specialist
+  - "Security & Compliance Analyst"
+  - "Testing & Validation Engineer"
+  - Retrospective Agent
+model: "Claude Opus 4.6 (copilot)"
 argument-hint: >-
   Describe the DevOps challenge, pipeline architecture question, or maturity
   assessment need

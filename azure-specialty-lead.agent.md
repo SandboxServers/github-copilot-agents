@@ -13,25 +13,22 @@ name: Azure Specialty Lead
 tools:
   - read
   - search
-  - webSearch
+  - web
   - agent
   - todo
-  - mcp_microsoftdocs_microsoft_docs_search
-  - mcp_microsoftdocs_microsoft_docs_fetch
+  - microsoftdocs/mcp/*
 agents:
-  - azure-ai-specialist
-  - azure-data-engineer
-  - azure-storage-engineer
-  - azure-compute-engineer
-  - azure-network-engineer
-  - azure-monitoring-engineer
-  - azure-integration-architect
-  - azure-database-specialist
-  - cost-optimization-specialist
-  - security-compliance-analyst
-model:
-  - Claude Opus 4 (copilot)
-  - Claude Sonnet 4 (copilot)
+  - Azure AI Specialist
+  - Azure Data Engineer
+  - Azure Storage Engineer
+  - Azure Compute Engineer
+  - Azure Network Engineer
+  - "Azure Monitoring & Observability Engineer"
+  - Azure Integration Architect
+  - Azure Database Specialist
+  - Cost Optimization Specialist
+  - "Security & Compliance Analyst"
+model: "Claude Opus 4.6 (copilot)"
 argument-hint: >-
   Describe the multi-domain Azure solution, cross-cutting concern, or architecture
   coordination need

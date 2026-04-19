@@ -6,18 +6,14 @@ tools:
   - search
   - web
   - agent
-  - mcp_com_microsoft_wellarchitectedframework
-  - mcp_com_microsoft_pricing
-  - mcp_com_microsoft_policy
-  - mcp_com_microsoft_monitor
-  - mcp_microsoftdocs_microsoft_docs_search
-  - mcp_microsoftdocs_microsoft_docs_fetch
-  - mcp_microsoftdocs_microsoft_code_sample_search
-model:
-  - Claude Opus 4 (copilot)
-  - Claude Sonnet 4 (copilot)
+  - com.microsoft/azure/wellarchitectedframework
+  - com.microsoft/azure/pricing
+  - com.microsoft/azure/policy
+  - com.microsoft/azure/monitor
+  - microsoftdocs/mcp/*
+model: "Claude Sonnet 4.6 (copilot)"
 agents:
-  - azure-apps-infra-architect
+  - "Azure Apps & Infra Architect"
 ---
 
 # Role

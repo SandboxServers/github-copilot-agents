@@ -6,27 +6,23 @@ tools:
   - search
   - web
   - agent
-  - mcp_com_microsoft_foundry/*
-  - mcp_com_microsoft_search/*
-  - mcp_com_microsoft_cosmos/*
-  - mcp_com_microsoft_applicationinsights/*
-  - mcp_com_microsoft_monitor/*
-  - mcp_com_microsoft_pricing/*
-  - mcp_com_microsoft_keyvault/*
-  - mcp_com_microsoft_documentation/*
-  - mcp_microsoftdocs_microsoft_docs_search
-  - mcp_microsoftdocs_microsoft_docs_fetch
-  - mcp_microsoftdocs_microsoft_code_sample_search
+  - com.microsoft/azure/foundry
+  - com.microsoft/azure/search
+  - com.microsoft/azure/cosmos
+  - com.microsoft/azure/applicationinsights
+  - com.microsoft/azure/monitor
+  - com.microsoft/azure/pricing
+  - com.microsoft/azure/keyvault
+  - com.microsoft/azure/documentation
+  - microsoftdocs/mcp/*
 agents:
-  - azure-terraform-author
-  - azure-bicep-author
-  - azure-apps-infra-architect
-  - security-compliance-analyst
-  - cost-optimization-specialist
+  - Azure Terraform Author
+  - Bicep Code Author
+  - "Azure Apps & Infra Architect"
+  - "Security & Compliance Analyst"
+  - Cost Optimization Specialist
 argument-hint: "Describe your AI use case, data sources, and requirements"
-model:
-  - "Claude Opus 4 (copilot)"
-  - "Claude Sonnet 4 (copilot)"
+model: "Claude Sonnet 4.6 (copilot)"
 handoffs:
   - label: Implement Infrastructure
     agent: azure-apps-infra-architect

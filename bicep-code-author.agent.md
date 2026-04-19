@@ -12,20 +12,15 @@ tools:
   - read
   - search
   - web
-  - editFiles
-  - createFile
-  - runInTerminal
+  - edit
+  - execute
   - agent
-  - mcp_microsoftdocs_microsoft_docs_search
-  - mcp_microsoftdocs_microsoft_docs_fetch
-  - mcp_microsoftdocs_microsoft_code_sample_search
-model:
-  - "Claude Opus 4 (copilot)"
-  - "Claude Sonnet 4 (copilot)"
+  - microsoftdocs/mcp/*
+model: "Claude Opus 4.6 (copilot)"
 agents:
-  - azure-apps-infra-architect
-  - azure-terraform-author
-  - testing-validation-engineer
+  - "Azure Apps & Infra Architect"
+  - Azure Terraform Author
+  - "Testing & Validation Engineer"
 argument-hint: Describe what infrastructure to implement or the architecture to codify in Bicep
 ---
 

@@ -13,20 +13,13 @@ tools:
   - search
   - execute
   - agent
-  - editFiles
-  - createFile
-  - runInTerminal
-  - mcp_microsoftdocs_microsoft_docs_search
-  - mcp_microsoftdocs_microsoft_docs_fetch
-  - mcp_microsoftdocs_microsoft_code_sample_search
+  - microsoftdocs/mcp/*
 agents:
-  - azure-terraform-author
-  - powershell-automation-dev
-  - azure-apps-infra-architect
-  - security-compliance-analyst
-model:
-  - Claude Opus 4 (copilot)
-  - Claude Sonnet 4 (copilot)
+  - Azure Terraform Author
+  - PowerShell Automation Developer
+  - "Azure Apps & Infra Architect"
+  - "Security & Compliance Analyst"
+model: "Claude Opus 4.6 (copilot)"
 argument-hint: >-
   Describe the deployment, code, or infrastructure that needs testing or validation
 ---
