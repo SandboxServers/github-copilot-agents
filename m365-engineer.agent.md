@@ -16,17 +16,13 @@ description: >-
 tools:
   - read
   - search
-  - webSearch
+  - web
   - agent
-  - mcp_microsoftdocs_microsoft_docs_search
-  - mcp_microsoftdocs_microsoft_docs_fetch
-  - mcp_microsoftdocs_microsoft_code_sample_search
-model:
-  - Claude Opus 4 (copilot)
-  - Claude Sonnet 4 (copilot)
+  - microsoftdocs/mcp/*
+model: "Claude Sonnet 4.6 (copilot)"
 agents:
-  - entra-id-specialist
-  - teams-admin
+  - Entra ID Specialist
+  - Microsoft Teams Administrator
 argumentHint: Describe the M365 scenario, workload question, or platform architecture need
 ---
 

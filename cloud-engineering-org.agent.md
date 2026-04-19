@@ -13,25 +13,22 @@ name: Microsoft Cloud Engineering Organization
 tools:
   - read
   - search
-  - webSearch
+  - web
   - agent
   - todo
-  - mcp_microsoftdocs_microsoft_docs_search
-  - mcp_microsoftdocs_microsoft_docs_fetch
+  - microsoftdocs/mcp/*
 agents:
-  - platform-engineering-lead
-  - devops-lead
-  - azure-specialty-lead
-  - identity-productivity-lead
-  - security-compliance-analyst
-  - cost-optimization-specialist
-  - documentation-writer
-  - powershell-automation-dev
-  - testing-validation-engineer
-  - retrospective-agent
-model:
-  - Claude Opus 4 (copilot)
-  - Claude Sonnet 4 (copilot)
+  - Platform Engineering Lead
+  - DevOps Lead
+  - Azure Specialty Lead
+  - "Identity & Productivity Lead"
+  - "Security & Compliance Analyst"
+  - Cost Optimization Specialist
+  - Documentation Writer
+  - PowerShell Automation Developer
+  - "Testing & Validation Engineer"
+  - Retrospective Agent
+model: "Claude Sonnet 4.6 (copilot)"
 argument-hint: >-
   Describe the engagement, problem, or initiative to scope and execute across the
   Microsoft cloud ecosystem

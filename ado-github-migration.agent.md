@@ -30,8 +30,8 @@ tools:
   - microsoftdocs/mcp/*       # Search & fetch official Azure DevOps and GitHub docs
 
 agents:
-  - azure-pipelines-architect # Senior ADO pipeline specialist — delegate ADO-specific analysis
-  - github-actions-architect  # Senior GHA workflow specialist — delegate GHA-specific design
+  - Azure Pipelines Architect # Senior ADO pipeline specialist — delegate ADO-specific analysis
+  - GitHub Actions Architect  # Senior GHA workflow specialist — delegate GHA-specific design
   - Explore                   # Fast read-only codebase exploration
 
 model:

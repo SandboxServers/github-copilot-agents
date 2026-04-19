@@ -1,5 +1,7 @@
 # Bicep Code Author — Knowledge Index
 
+> **Last Updated:** 2026-04-19 — Content extracted from original monolithic knowledge files. No external research applied yet.
+
 Load only the files relevant to your current task. Do NOT load all files at once.
 
 | Topic | File | When to Load |

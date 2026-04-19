@@ -10,19 +10,14 @@ tools:
   - read
   - search
   - web
-  - editFiles
-  - createFile
-  - runInTerminal
+  - edit
+  - execute
   - agent
-  - mcp_com_microsoft_documentation
-  - mcp_microsoftdocs_microsoft_docs_search
-  - mcp_microsoftdocs_microsoft_docs_fetch
-  - mcp_microsoftdocs_microsoft_code_sample_search
-model:
-  - "Claude Opus 4 (copilot)"
-  - "Claude Sonnet 4 (copilot)"
+  - com.microsoft/azure/documentation
+  - microsoftdocs/mcp/*
+model: "Claude Opus 4.6 (copilot)"
 agents:
-  - azure-apps-infra-architect
+  - "Azure Apps & Infra Architect"
 argument-hint: Describe what infrastructure to implement or the architecture to codify
 ---
 

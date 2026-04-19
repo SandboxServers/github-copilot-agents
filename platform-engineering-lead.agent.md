@@ -11,24 +11,21 @@ name: Platform Engineering Lead
 tools:
   - read
   - search
-  - webSearch
+  - web
   - agent
   - todo
-  - mcp_microsoftdocs_microsoft_docs_search
-  - mcp_microsoftdocs_microsoft_docs_fetch
+  - microsoftdocs/mcp/*
 agents:
-  - azure-apps-infra-architect
-  - landing-zone-specialist
-  - caf-evangelist
-  - azure-terraform-author
-  - bicep-code-author
-  - cost-optimization-specialist
-  - security-compliance-analyst
-  - testing-validation-engineer
-  - retrospective-agent
-model:
-  - Claude Opus 4 (copilot)
-  - Claude Sonnet 4 (copilot)
+  - "Azure Apps & Infra Architect"
+  - Landing Zone Specialist
+  - Cloud Adoption Framework Evangelist
+  - Azure Terraform Author
+  - Bicep Code Author
+  - Cost Optimization Specialist
+  - "Security & Compliance Analyst"
+  - "Testing & Validation Engineer"
+  - Retrospective Agent
+model: "Claude Opus 4.6 (copilot)"
 argument-hint: >-
   Describe the platform challenge, maturity assessment, or infrastructure
   orchestration need

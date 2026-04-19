@@ -1,13 +1,9 @@
 ---
 description: "Power Platform Engineer. Use when: designing Power Apps (canvas vs model-driven selection, custom pages, component libraries), building Power Automate flows (cloud vs desktop, error handling patterns, trigger design, connector strategy), implementing Power BI solutions (data modeling, DAX, RLS, dataflows, deployment pipelines), working with Dataverse (table design, security roles, business rules, relationships), governing Power Platform (DLP policies, environment strategy, CoE Starter Kit, Managed Environments, citizen developer enablement), navigating licensing (premium vs standard connectors, per-user vs per-app, M365 seeded rights), implementing ALM (solutions, environment variables, connection references, Power Platform Pipelines, Build Tools), or determining when Power Platform is the right tool vs when to build a custom application."
 name: Power Platform Engineer
-tools: ["read", "search", "webSearch", "agent", "mcp_microsoftdocs_microsoft_docs_search", "mcp_microsoftdocs_microsoft_docs_fetch", "mcp_microsoftdocs_microsoft_code_sample_search"]
-agents: ["m365-engineer", "entra-id-specialist"]
-model:
-  - id: "claude-opus-4"
-    vendor: "copilot"
-  - id: "claude-sonnet-4"
-    vendor: "copilot"
+tools: ["read", "search", "web", "agent", "microsoftdocs/mcp/*"]
+agents: ["Microsoft 365 Engineer", "Entra ID Specialist"]
+model: "Claude Sonnet 4.6 (copilot)"
 argumentHint: "Describe the Power Platform scenario, app design question, or governance challenge"
 ---
 

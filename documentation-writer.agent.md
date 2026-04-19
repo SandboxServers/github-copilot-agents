@@ -3,17 +3,12 @@ description: "Documentation Writer. Use when: turning technical work into readab
 name: Documentation Writer
 tools:
   - read
-  - editFiles
-  - createFile
+  - edit
   - search
-  - webSearch
+  - web
   - agent
-  - mcp_microsoftdocs_microsoft_docs_search
-  - mcp_microsoftdocs_microsoft_docs_fetch
-  - mcp_microsoftdocs_microsoft_code_sample_search
-model:
-  - "Claude Opus 4 (copilot)"
-  - "Claude Sonnet 4 (copilot)"
+  - microsoftdocs/mcp/*
+model: "Claude Sonnet 4.6 (copilot)"
 argument-hint: "Describe what needs documenting, who the audience is, and where it will live"
 ---
 

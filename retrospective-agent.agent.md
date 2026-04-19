@@ -11,23 +11,20 @@ name: Retrospective Agent
 tools:
   - read
   - search
-  - webSearch
+  - web
   - agent
-  - mcp_microsoftdocs_microsoft_docs_search
-  - mcp_microsoftdocs_microsoft_docs_fetch
+  - microsoftdocs/mcp/*
 agents:
-  - azure-apps-infra-architect
-  - cost-optimization-specialist
-  - security-compliance-analyst
-  - testing-validation-engineer
-  - azure-terraform-author
-  - bicep-code-author
-  - azure-network-engineer
-  - azure-pipelines-architect
-  - github-actions-architect
-model:
-  - Claude Opus 4 (copilot)
-  - Claude Sonnet 4 (copilot)
+  - "Azure Apps & Infra Architect"
+  - Cost Optimization Specialist
+  - "Security & Compliance Analyst"
+  - "Testing & Validation Engineer"
+  - Azure Terraform Author
+  - Bicep Code Author
+  - Azure Network Engineer
+  - Azure Pipelines Architect
+  - GitHub Actions Architect
+model: "Claude Sonnet 4.6 (copilot)"
 argument-hint: >-
   Describe the engagement, sprint, or incident to retrospect, or ask to review
   previous action items

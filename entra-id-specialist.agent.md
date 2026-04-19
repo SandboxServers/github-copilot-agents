@@ -15,14 +15,10 @@ description: >-
 tools:
   - read
   - search
-  - webSearch
+  - web
   - agent
-  - mcp_microsoftdocs_microsoft_docs_search
-  - mcp_microsoftdocs_microsoft_docs_fetch
-  - mcp_microsoftdocs_microsoft_code_sample_search
-model:
-  - Claude Opus 4 (copilot)
-  - Claude Sonnet 4 (copilot)
+  - microsoftdocs/mcp/*
+model: "Claude Sonnet 4.6 (copilot)"
 argumentHint: Describe the identity scenario, authentication requirement, or tenant posture question
 ---
 
