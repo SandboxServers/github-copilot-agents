@@ -41,6 +41,26 @@
 | **No timeout configuration** | Default timeouts may be too long (blocking resources) or too short (failing prematurely) | Set explicit timeouts at every integration boundary. Match to expected response time + margin. |
 | **Fire-and-forget without tracking** | Messages sent with no way to trace delivery or processing status | Implement distributed tracing (Application Insights). Correlate with correlation IDs across services. |
 
+## Security Anti-Patterns
+
+| Anti-Pattern | Problem | Better Approach |
+|---|---|---|
+| **Secrets in APIM named values (plain text)** | Secrets visible in management API, portal, and deployment templates | Use Key Vault–linked named values in APIM. Secrets stay in Key Vault, APIM references them. |
+| **No mutual TLS for backends** | APIM-to-backend traffic is unauthenticated — anyone on the network can call the backend directly | Configure client certificates in APIM backend policy. Backend validates APIM's cert. |
+| **Shared keys for all consumers** | One compromised key exposes all API access. No per-consumer audit trail. | APIM subscriptions per consumer. OAuth 2.0 with scoped tokens for fine-grained access. |
+| **Service Bus connection strings in app config** | Full Manage access shared across all services — any service can create/delete queues | Use Azure AD (Entra ID) RBAC: `Azure Service Bus Data Sender/Receiver` roles per service identity. |
+| **Logic Apps exposing trigger URL publicly** | Anyone with the SAS URL can invoke the workflow — no IP restriction or auth check | Add IP restrictions, require Azure AD auth, or front with APIM for policy enforcement. |
+
+## Operational Anti-Patterns
+
+| Anti-Pattern | Problem | Better Approach |
+|---|---|---|
+| **Manual queue/topic creation** | Configuration drift between environments. Missing queues cause runtime failures. | Infrastructure as Code (Bicep/Terraform) for all messaging resources. Deploy with pipeline. |
+| **No correlation ID propagation** | Cannot trace a transaction across services — debugging requires log timestamp matching | Propagate `traceparent` or custom correlation ID through all messages, events, and HTTP calls. |
+| **Alerting on averages only** | P50 latency looks fine while P99 users experience 30-second waits | Alert on percentiles (P95, P99) and error rates. Averages hide tail latency problems. |
+| **No load testing of integration flows** | First time seeing production volume is in production — discover limits too late | Load test end-to-end integration paths. Verify queue throughput, APIM rate limits, Logic Apps concurrency. |
+| **No disaster recovery plan for integration** | Region failure takes down all messaging, workflows, and API gateway with no failover | Geo-redundant Service Bus (Premium), multi-region APIM (Premium), paired Logic Apps deployments. |
+
 ## Quick Decision Guide: When to Use What
 
 | If You Need... | Use | NOT |
