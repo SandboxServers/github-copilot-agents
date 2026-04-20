@@ -1,22 +1,35 @@
-# Questions
+# Probing Questions
 
-## Discovery
-- What data sources exist today? (Databases, files, APIs, SaaS apps, streaming)
-- What's the data volume? (GB vs TB vs PB — this changes everything)
-- What are the latency requirements? (Batch daily? Near-real-time? True streaming?)
-- Who consumes the data? (BI analysts? Data scientists? Applications? External partners?)
-- What governance/compliance requirements exist? (GDPR, HIPAA, data residency, retention)
+Questions to ask when designing a data platform.
 
-## Architecture
-- Is there an existing data platform? (Brownfield migration vs greenfield build)
-- What skills does the team have? (SQL-heavy? Python/Spark? Power Query? All of the above?)
-- What's the BI tool? (Power BI? Tableau? Both? — affects gold layer design)
-- What's the budget? (This determines Fabric capacity tier, Databricks cluster size, everything)
-- How many source systems? (5 sources is different architecture than 500 sources)
+## Sizing and Requirements
 
-## Probing for Gaps
-- How do you handle schema changes from source systems? (If "they break our pipeline," we need schema evolution)
-- Who owns data quality? (If "nobody," that's the first problem to solve)
-- How do you know if yesterday's pipeline failed? (If "we don't until someone complains," we need monitoring)
-- Can you trace a number in a report back to its source? (If not, we need lineage)
-- What happens when a source system is unavailable? (If "the pipeline fails," we need idempotency and retry)
+- "What's the data volume and expected growth rate?" → Determines storage tier and compute sizing
+- "Real-time or batch? What latency is acceptable?" → Streaming vs batch ingestion architecture
+- "Who consumes the data? BI users, data scientists, applications?" → Shapes gold layer design
+- "What compliance requirements exist? (GDPR, HIPAA, data residency)" → Purview, encryption, regional deployment
+- "What's the budget model: consumption-based or reserved capacity?" → Fabric capacity vs Databricks DBU pricing
+
+## Platform Selection
+
+- "Existing investment in Spark or Databricks?" → Databricks continuity vs Fabric migration
+- "Is there a multi-cloud requirement?" → Databricks (multi-cloud) over Fabric (Azure-only)
+- "What's the BI tool? Power BI, Tableau, both?" → Fabric has native Power BI; Databricks needs connectors
+- "What skills does the team have? SQL, Python/Spark, Power Query?" → Platform and tooling alignment
+- "How many data sources and what connector types?" → Data Factory evaluation for complex integrations
+
+## Architecture and Quality
+
+- "Is this greenfield or migrating from an existing platform?" → Migration complexity assessment
+- "Data quality requirements and current quality ownership?" → Quality rules at silver layer, tooling choice
+- "How do you handle schema changes from source systems?" → Schema evolution strategy needed
+- "Retention requirements for raw data and processed data?" → Lifecycle management, Delta VACUUM policies
+- "Can you trace a number in a report back to its source?" → Lineage requirements (Purview/Unity Catalog)
+
+## Operational Readiness
+
+- "How do you know if yesterday's pipeline failed?" → Monitoring and alerting strategy
+- "What happens when a source system is unavailable?" → Idempotency, retry, and resilience design
+- "Who owns data quality today?" → If nobody, governance is the first problem to solve
+- "How many environments needed? (dev, test, staging, prod)" → Capacity planning and CI/CD design
+- "What's the recovery time objective if the platform goes down?" → DR strategy and backup requirements

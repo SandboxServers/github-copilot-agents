@@ -1,6 +1,6 @@
 # Power Platform Engineer — Knowledge Index
 
-> **Last Updated:** 2026-04-19 — Content extracted from original monolithic knowledge files. No external research applied yet.
+> **Last Updated:** 2025-07-18 — All chunks replaced with MCP-researched content.
 
 Load only the files relevant to your current task. Do NOT load all files at once.
 
@@ -11,7 +11,7 @@ Load only the files relevant to your current task. Do NOT load all files at once
 | Power BI | [power-bi.md](power-bi.md) | When working with data modeling, DAX, RLS, deployment pipelines, or dataflows |
 | Dataverse | [dataverse.md](dataverse.md) | When working with Dataverse tables, security model, solutions, or environment variables |
 | Governance | [governance.md](governance.md) | When designing environment strategy, DLP policies, CoE, or citizen developer programs |
-| Licensing | [licensing.md](licensing.md) | When navigating premium vs standard connectors, license plans, or cost optimization |
+| Licensing | [licensing-model.md](licensing-model.md) | When navigating premium vs standard connectors, license plans, or cost optimization |
 | ALM | [alm.md](alm.md) | When implementing solution-based development, Power Platform Pipelines, or DevOps integration |
-| Integration | [integration.md](integration.md) | When building custom connectors, Azure Functions integration, or on-prem gateway |
-| Decision Guidance | [decision-guidance.md](decision-guidance.md) | When deciding if Power Platform is right vs building a custom application |
+| Citizen Developer | [citizen-developer.md](citizen-developer.md) | When enabling citizen developers, training, guardrails, or graduation criteria |
+| Anti-Patterns | [pp-anti-patterns.md](pp-anti-patterns.md) | When identifying common Power Platform mistakes to avoid |

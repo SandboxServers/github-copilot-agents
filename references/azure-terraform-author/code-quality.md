@@ -1,33 +1,202 @@
-## Code Quality Checklist
+# Code Quality
 
-### Every Module Should Have
-- [ ] `terraform.tf` with pinned provider versions (`~>` constraint)
-- [ ] Variables with `description`, `type`, `default` (where sensible), and `validation` (where constrained)
-- [ ] Outputs for resource `id`, `name`, and any connection/endpoint info
-- [ ] `lifecycle` blocks on stateful resources (`prevent_destroy`)
-- [ ] `ignore_changes` for Azure-managed properties
-- [ ] Examples that deploy without manual input
-- [ ] At least one `.tftest.hcl` test file
-- [ ] No hardcoded values — everything parameterized or computed in `locals`
-- [ ] No provider blocks (only `required_providers` with `configuration_aliases` if needed)
-- [ ] Consistent naming in locals block, not scattered across resources
+## Anti-Patterns and Corrections
 
-### Every Root Module Should Have
-- [ ] Remote backend configuration
-- [ ] Variable definitions file per environment (`.tfvars`)
-- [ ] Lock file committed (`.terraform.lock.hcl`)
-- [ ] `.gitignore` excluding `.terraform/`, `*.tfstate`, `*.tfstate.backup`, `*.tfplan`
-- [ ] CI pipeline running: fmt → validate → tflint → checkov → plan → apply (with approval gate)
+### Using count when for_each is better
+```hcl
+# BAD: count with index — reordering the list destroys/recreates resources
+variable "storage_accounts" {
+  default = ["logs", "data", "backup"]
+}
 
-## Anti-Patterns to Reject
+resource "azurerm_storage_account" "bad" {
+  count = length(var.storage_accounts)
+  name  = "st${var.storage_accounts[count.index]}${var.environment}"
+  # If "data" is removed, "backup" shifts from index 2 to index 1 → destroyed and recreated
+}
 
-1. **Monolithic state** — one state file for everything → blast radius of one bad apply = entire infrastructure
-2. **Hardcoded subscription/tenant IDs** — use data sources or variables
-3. **count with complex conditionals** — use `for_each` with maps for anything non-trivial
-4. **Secrets in terraform.tfvars** — use Key Vault data source or environment variables
-5. **Nested modules more than 2 levels** — if your module calls a module that calls a module, it's too deep
-6. **Over-abstracted modules** — a module that wraps a single resource with 40 variables is worse than the resource
-7. **No lock file committed** — dependency drift between team members
-8. **apply -auto-approve in production** — always plan → review → apply with explicit approval
-9. **Ignoring plan output** — if plan says "1 to destroy, 1 to create" on a database, STOP
-10. **Using `terraform workspace` for isolation in production** — workspaces share backend, not truly isolated
+# GOOD: for_each with a set — removing an item only affects that item
+resource "azurerm_storage_account" "good" {
+  for_each = toset(var.storage_accounts)
+  name     = "st${each.value}${var.environment}"
+}
+```
+
+### Hardcoded values that should be variables
+```hcl
+# BAD
+resource "azurerm_resource_group" "main" {
+  name     = "rg-myapp-prod"
+  location = "eastus2"
+}
+
+# GOOD
+resource "azurerm_resource_group" "main" {
+  name     = "${var.project}-${var.environment}-rg"
+  location = var.location
+}
+```
+
+### Missing variable validation
+```hcl
+# BAD: No validation — silent failures
+variable "environment" {
+  type = string
+}
+
+# GOOD: Fail fast with clear error
+variable "environment" {
+  type = string
+  validation {
+    condition     = contains(["dev", "staging", "prod"], var.environment)
+    error_message = "Environment must be dev, staging, or prod."
+  }
+}
+
+variable "cidr_block" {
+  type = string
+  validation {
+    condition     = can(cidrhost(var.cidr_block, 0))
+    error_message = "Must be a valid CIDR block (e.g., 10.0.0.0/16)."
+  }
+}
+```
+
+### Overly broad role assignments
+```hcl
+# BAD: Owner on subscription
+resource "azurerm_role_assignment" "bad" {
+  scope                = data.azurerm_subscription.current.id
+  role_definition_name = "Owner"
+  principal_id         = azurerm_user_assigned_identity.app.principal_id
+}
+
+# GOOD: Least privilege, scoped to resource
+resource "azurerm_role_assignment" "good" {
+  scope                = azurerm_key_vault.main.id
+  role_definition_name = "Key Vault Secrets User"
+  principal_id         = azurerm_user_assigned_identity.app.principal_id
+}
+```
+
+### Magic numbers
+```hcl
+# BAD
+resource "azurerm_kubernetes_cluster" "main" {
+  default_node_pool {
+    vm_size    = "Standard_D4s_v3"
+    node_count = 3
+    max_pods   = 110
+  }
+}
+
+# GOOD
+resource "azurerm_kubernetes_cluster" "main" {
+  default_node_pool {
+    vm_size    = var.system_node_pool_vm_size
+    node_count = var.system_node_pool_count
+    max_pods   = var.system_node_pool_max_pods
+  }
+}
+```
+
+### Sensitive values in state
+```hcl
+# BAD: Password visible in state and logs
+variable "db_password" {
+  type = string
+}
+
+# GOOD: Mark sensitive — hidden from plan output
+variable "db_password" {
+  type      = string
+  sensitive = true
+}
+
+output "connection_string" {
+  value     = "Server=${azurerm_mssql_server.main.fqdn};Password=${var.db_password}"
+  sensitive = true
+}
+```
+
+## PR Review Checklist
+
+### Must-Have
+- [ ] `terraform fmt` passes (no formatting drift)
+- [ ] `terraform validate` passes
+- [ ] `terraform plan` shows only expected changes
+- [ ] No secrets or credentials in `.tf` files or `.tfvars` committed to repo
+- [ ] Sensitive variables marked with `sensitive = true`
+- [ ] All variables have `type`, `description`, and `validation` (where applicable)
+- [ ] All outputs have `description`
+- [ ] Resources that must not be destroyed have `prevent_destroy = true`
+- [ ] Role assignments use least privilege
+- [ ] `.terraform.lock.hcl` is committed and up to date
+
+### Should-Have
+- [ ] `tflint` passes with zero warnings
+- [ ] `checkov` passes (or failures are documented and exempted)
+- [ ] Integration tests pass in CI
+- [ ] README is updated (via `terraform-docs`)
+- [ ] Resources use `tags = local.common_tags` (or merge with resource-specific tags)
+- [ ] Timeout blocks set on resources that commonly exceed defaults (AKS, VNet Gateway, SQL MI)
+- [ ] `ignore_changes` set for Azure-mutated properties (node counts, deployment-managed settings)
+- [ ] No `depends_on` that could be replaced with implicit reference dependencies
+
+### Red Flags (Block the PR)
+- [ ] `terraform plan` shows unexpected destroys
+- [ ] `lifecycle { prevent_destroy = true }` removed from production databases, Key Vaults, storage accounts
+- [ ] `Owner` or `Contributor` role assigned at subscription scope without documented justification
+- [ ] Secrets stored in `terraform.tfvars` or hardcoded in `.tf` files
+- [ ] State file stored locally or in a non-encrypted backend
+- [ ] Provider version unpinned (`version = ">= 3.0"` with no upper bound)
+
+## Security Scanning Integration
+
+### tfsec (Aqua/Trivy)
+```bash
+# Run tfsec
+tfsec . --format json --out tfsec-results.json
+
+# Inline suppression (use sparingly, with documented reason)
+# In the .tf file:
+resource "azurerm_storage_account" "main" {
+  #tfsec:ignore:azure-storage-default-action-deny  -- Public access required for static site
+  # ...
+}
+```
+
+### Checkov
+```bash
+# Run checkov
+checkov -d . --output json > checkov-results.json
+
+# Skip specific checks
+checkov -d . --skip-check CKV_AZURE_35,CKV_AZURE_33
+```
+
+### Policy-as-Code (OPA/Conftest)
+```rego
+# policy/terraform.rego
+package terraform
+
+deny[msg] {
+  resource := input.resource_changes[_]
+  resource.type == "azurerm_storage_account"
+  not resource.change.after.min_tls_version == "TLS1_2"
+  msg := sprintf("Storage account %s must use TLS 1.2", [resource.address])
+}
+
+deny[msg] {
+  resource := input.resource_changes[_]
+  resource.type == "azurerm_storage_account"
+  resource.change.after.allow_nested_items_to_be_public == true
+  msg := sprintf("Storage account %s must not allow public blob access", [resource.address])
+}
+```
+
+```bash
+# Run against plan JSON
+terraform show -json tfplan > plan.json
+conftest test plan.json -p policy/
+```

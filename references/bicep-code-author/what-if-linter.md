@@ -1,76 +1,212 @@
-## What-If Operations
+# What-If & Linter
 
-### Preview Changes Before Deploying
+## What-If Deployments
+Preview changes before deploying — see what will be created, modified, or deleted.
+
 ```bash
-# Azure CLI
-az deployment group what-if --resource-group myRG --template-file main.bicep
+# Resource group scope
+az deployment group what-if \
+  --resource-group rg-myapp-prod \
+  --template-file main.bicep \
+  --parameters parameters/prod.bicepparam
 
-# PowerShell
-New-AzResourceGroupDeployment -WhatIf -ResourceGroupName myRG -TemplateFile main.bicep
+# Subscription scope
+az deployment sub what-if \
+  --location eastus2 \
+  --template-file platform.bicep \
+  --parameters parameters/platform.bicepparam
+
+# Management group scope
+az deployment mg what-if \
+  --management-group-id myMgGroup \
+  --location eastus2 \
+  --template-file policies.bicep
+
+# Tenant scope
+az deployment tenant what-if \
+  --location eastus2 \
+  --template-file hierarchy.bicep
 ```
 
-### Validation Levels (CLI 2.76.0+ / PS 13.4.0+)
-| Level | Checks |
-|---|---|
-| **Provider** (default) | Full — syntax, resources, dependencies, permissions |
-| **ProviderNoRbac** | Full minus write permissions |
-| **Template** | Static only — syntax and structure |
-
 ### Change Types
-- **Create** — new resource to be created
-- **Delete** — resource exists but not in template (complete mode only)
-- **Modify** — resource exists, properties will change
-- **NoChange** — resource redeployed with no property changes
-- **Ignore** — resource not in template, won't be touched
-- **NoEffect** — read-only property, ignored by service
-- **Deploy** — no changes possible to determine
-
-### Limitations
-What-if cannot resolve: `reference()`, `listKeys()`, `newGuid()`, `utcNow()`, secure parameter values, or properties from resources not in the same template.
-
-## Linter Rules
-
-### Key Rules to Enable Beyond Defaults
-| Rule | Default | Recommendation |
+| Symbol | Change Type | Meaning |
 |---|---|---|
-| `use-recent-api-versions` | off | Enable — catch stale API versions |
-| `use-recent-module-versions` | off | Enable — catch outdated AVM modules |
-| `no-hardcoded-location` | off | Enable — enforce parameterized locations |
-| `no-loc-expr-outside-params` | off | Enable — location expressions only in params |
-| `use-resource-id-functions` | off | Enable — no hand-crafted resource IDs |
+| `+` (green) | Create | Resource will be created |
+| `~` (purple) | Modify | Resource exists, properties will change |
+| `-` (red) | Delete | Resource will be deleted (complete mode only) |
+| `*` (gray) | NoChange | Resource exists, no changes detected |
+| `x` (yellow) | Ignore | Resource is outside the deployment scope |
+| `!` (orange) | NoEffect | No change due to deployment condition |
 
-### Security-Critical Rules (Always Warning or Error)
-- `secure-parameter-default` — `@secure()` params must not have defaults
-- `secure-params-in-nested-deploy` — secure values in nested deployments
-- `secure-secrets-in-params` — secrets handled securely
-- `outputs-should-not-contain-secrets` — no secrets in outputs
-- `adminusername-should-not-be-literal` — no hardcoded admin usernames
-- `protect-commandtoexecute-secrets` — use protectedSettings for scripts
-- `use-secure-value-for-secure-inputs` — secure values for secure resource properties
+### Filtering What-If Output
+```bash
+# Show only creates and deletes
+az deployment group what-if \
+  --resource-group rg-myapp-prod \
+  --template-file main.bicep \
+  --parameters parameters/prod.bicepparam \
+  --result-format FullResourcePayloads    # See complete resource definitions
 
-### Configuration
+# JSON output for CI/CD parsing
+az deployment group what-if \
+  --resource-group rg-myapp-prod \
+  --template-file main.bicep \
+  --parameters parameters/prod.bicepparam \
+  --no-pretty-print -o json
+```
+
+### CI/CD What-If Pattern
+```yaml
+# Azure Pipelines — what-if as PR gate
+- task: AzureCLI@2
+  displayName: 'What-If Analysis'
+  inputs:
+    azureSubscription: 'production-wif'
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      result=$(az deployment group what-if \
+        --resource-group $(resourceGroup) \
+        --template-file main.bicep \
+        --parameters parameters/$(environment).bicepparam \
+        --no-pretty-print -o json)
+      
+      # Check for destructive changes
+      deletes=$(echo "$result" | jq '[.changes[] | select(.changeType == "Delete")] | length')
+      if [ "$deletes" -gt "0" ]; then
+        echo "##vso[task.logissue type=warning]What-If shows $deletes resources will be DELETED"
+      fi
+      
+      echo "$result" | jq '.changes[] | {resourceId: .resourceId, changeType: .changeType}'
+```
+
+## Bicep Linter
+The Bicep linter runs automatically on build and in the VS Code extension. Configure it in `bicepconfig.json`.
+
+### bicepconfig.json
 ```json
-// bicepconfig.json
 {
   "analyzers": {
     "core": {
+      "enabled": true,
       "rules": {
-        "use-recent-api-versions": { "level": "warning" },
-        "use-recent-module-versions": { "level": "warning" },
-        "no-hardcoded-location": { "level": "warning" }
+        "no-hardcoded-env-urls": {
+          "level": "error"
+        },
+        "no-unused-params": {
+          "level": "error"
+        },
+        "no-unused-vars": {
+          "level": "error"
+        },
+        "prefer-interpolation": {
+          "level": "warning"
+        },
+        "secure-parameter-default": {
+          "level": "error"
+        },
+        "simplify-interpolation": {
+          "level": "warning"
+        },
+        "protect-commandtoexecute-secrets": {
+          "level": "error"
+        },
+        "use-stable-vm-image": {
+          "level": "warning"
+        },
+        "use-safe-access": {
+          "level": "warning"
+        },
+        "no-hardcoded-location": {
+          "level": "error"
+        },
+        "no-unnecessary-dependson": {
+          "level": "warning"
+        },
+        "use-recent-api-versions": {
+          "level": "warning",
+          "maxAllowedAgeInDays": 730
+        },
+        "use-resource-id-functions": {
+          "level": "warning"
+        },
+        "explicit-values-for-loc-params": {
+          "level": "warning"
+        },
+        "max-outputs": {
+          "level": "warning"
+        },
+        "max-params": {
+          "level": "warning"
+        },
+        "max-resources": {
+          "level": "warning"
+        },
+        "max-variables": {
+          "level": "warning"
+        },
+        "outputs-should-not-contain-secrets": {
+          "level": "error"
+        }
       }
     }
   }
 }
 ```
 
-### Suppression
-```bicep
-// Suppress on next line
-#disable-next-line no-hardcoded-env-urls
-var endpoint = 'https://management.azure.com'
+### Key Linter Rules Explained
 
-// Suppress for entire resource
-#disable-diagnostics
-resource legacy 'Microsoft.Resources/deployments@2021-04-01' = { ... }
+| Rule | Level | What It Catches |
+|---|---|---|
+| `no-hardcoded-env-urls` | error | URLs like `management.azure.com` instead of `environment().resourceManager` |
+| `no-unused-params` | error | Parameters declared but never referenced |
+| `no-unused-vars` | error | Variables declared but never referenced |
+| `secure-parameter-default` | error | Secure parameters with default values (the default shows in deployment history) |
+| `no-hardcoded-location` | error | Location strings like `'eastus2'` instead of `param location` |
+| `outputs-should-not-contain-secrets` | error | Outputs that expose Key Vault references or secure values |
+| `use-recent-api-versions` | warning | API versions older than 2 years |
+| `no-unnecessary-dependson` | warning | Explicit `dependsOn` that Bicep already infers from symbolic references |
+| `prefer-interpolation` | warning | `concat()` instead of string interpolation `'${}'` |
+
+### Suppressing Linter Warnings
+```bicep
+// Suppress for a single line
+#disable-next-line no-hardcoded-location
+param defaultLocation string = 'eastus2'    // Justified: this is a module default
+
+// Suppress with explanation (preferred)
+#disable-next-line no-hardcoded-env-urls // Using sovereign cloud URL for government deployment
+var managementUrl = 'https://management.usgovcloudapi.net'
 ```
+
+## Bicep Build & Validate
+```bash
+# Build — transpile to ARM JSON (catches syntax errors)
+az bicep build --file main.bicep
+
+# Build with stdout (for piping)
+az bicep build --file main.bicep --stdout
+
+# Validate against Azure — checks resource provider requirements
+az deployment group validate \
+  --resource-group rg-myapp-prod \
+  --template-file main.bicep \
+  --parameters parameters/prod.bicepparam
+
+# Preflight validation (validates without creating deployment object)
+az deployment group validate \
+  --resource-group rg-myapp-prod \
+  --template-file main.bicep \
+  --parameters parameters/prod.bicepparam
+
+# Decompile ARM JSON to Bicep (migration tool)
+az bicep decompile --file template.json
+```
+
+## Validation Pipeline Order
+Run these in order — each catches different issues:
+
+1. **`az bicep build`** — Syntax errors, type mismatches, linter violations
+2. **`az deployment group validate`** — ARM validation, resource provider checks
+3. **`az deployment group what-if`** — Preview actual changes against live environment
+4. **`az deployment group create`** — Deploy (only after all checks pass)

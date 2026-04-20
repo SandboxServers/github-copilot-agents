@@ -1,6 +1,7 @@
-## Service Bus
+# Service Bus
 
-### Tiers
+## Tiers
+
 | Feature | Basic | Standard | Premium |
 |---|---|---|---|
 | **Queues** | Yes | Yes | Yes |
@@ -8,60 +9,84 @@
 | **Sessions (FIFO)** | No | Yes | Yes |
 | **Transactions** | No | Yes | Yes |
 | **Duplicate detection** | No | Yes | Yes |
-| **Partitioning** | Yes (16 fixed) | Yes (16 fixed) | Yes (configurable at namespace creation) |
 | **Max message size** | 256 KB | 256 KB | 100 MB |
-| **Namespace size** | 400 GB | 400 GB | 1 TB per messaging unit |
-| **Throughput** | Variable, subject to throttling | Variable, subject to throttling | Predictable, per messaging unit (~4 MB/s per MU) |
-| **Pricing** | Per operation | Per operation + base | Per messaging unit (fixed) |
+| **Namespace storage** | 400 GB | 400 GB | 1 TB per messaging unit |
 | **VNet/Private endpoint** | No | No | Yes |
-| **Geo-DR** | No | Replication | Full geo-disaster recovery |
+| **Availability zones** | No | No | Yes |
+| **Geo-DR** | No | Metadata replication | Full geo-disaster recovery |
 | **Auto-scale** | No | No | Yes (messaging units) |
+| **Pricing** | Per operation | Per operation + base | Per messaging unit (~$668/MU/month) |
 
-### Key Decision: Standard vs Premium
-- **Standard**: adequate for most dev/test and moderate production. Per-operation pricing. Subject to noisy-neighbor throttling.
-- **Premium**: required for production workloads needing predictable latency, large messages (>256 KB), VNet isolation, sessions + partitioning together, or geo-DR. Fixed-cost per MU.
-- **Basic**: only for simple queue scenarios without topics. Don't use in production unless cost is extreme constraint.
+## Tier Selection
 
-### Messaging Patterns
+- **Basic**: Queues only. Don't use in production unless cost is extreme constraint. No topics, sessions, or transactions.
+- **Standard**: Queues + topics. Adequate for dev/test and moderate production. Per-operation pricing. Subject to noisy-neighbor throttling on shared infrastructure.
+- **Premium**: Required for production needing predictable latency, large messages (>256 KB), VNet isolation, availability zones, or geo-DR. Fixed-cost per messaging unit. Start with 1 MU (~4 MB/s throughput).
 
-#### Queue (Point-to-Point)
-- One sender, one receiver per message
-- Messages persist until consumed or expired
-- **Competing consumers**: multiple receivers pull from same queue — load balancing + resilience
-- Use **PeekLock** mode: receive → process → Complete (or Abandon/DeadLetter)
-- **ReceiveAndDelete**: lower latency but message lost if processing fails
+## Entities and Messaging Patterns
 
-#### Topics & Subscriptions (Pub/Sub)
-- One publisher, multiple subscribers — each subscription gets a copy
-- Subscriptions can have **filters** (SQL filter, correlation filter) to receive subset of messages
-- Use for broadcasting events to multiple consumers
-- Topic granularity: broad topics + subscription filters vs narrow topics — balance management vs filtering overhead
+### Queues (Point-to-Point)
+- One sender, one receiver per message. Messages persist until consumed or expired.
+- **Competing consumers**: Multiple receivers pull from same queue — provides load balancing and resilience.
+- Use **PeekLock** mode (preferred): Receive → Process → Complete (or Abandon/DeadLetter).
+- **ReceiveAndDelete**: Lower latency but message lost if processing fails. Only for non-critical data.
 
-#### Request/Reply
-- Use **message sessions** with `ReplyToSessionId` for correlated request-response
-- Sender sets `ReplyTo` queue and `SessionId` — receiver replies to that session
-- Enables ordered, correlated bidirectional communication
+### Topics and Subscriptions (Pub/Sub)
+- One publisher, multiple subscribers. Each subscription gets a copy of matching messages.
+- **Filter types**: SQL filter (SQL-like expressions on properties), Correlation filter (exact match on properties, most performant), Boolean filter (true = all, false = none).
+- Topic granularity: Broad topics + subscription filters vs narrow topics. Balance management overhead vs filtering complexity.
+- Each subscription is an independent queue — subscribers process at their own pace.
 
-#### Dead Letter Queue (DLQ)
-- Every queue/subscription has a DLQ subqueue
-- Messages moved to DLQ when:
-  - **MaxDeliveryCount exceeded** (default: 10) — poison message protection
-  - **TTL expired** — message sat too long without being consumed
-  - **Application-level dead-lettering** — consumer explicitly dead-letters unprocessable messages
-  - **Auto-forward chain > 4 hops**
-  - **Destination disabled or at capacity**
-- **Always monitor DLQ** — unprocessed dead letters indicate integration failures
+### Sessions (Ordered Processing)
+- Guarantee FIFO within a session. Messages with same `SessionId` processed in order by one consumer.
+- Session state: Consumer stores checkpoint with `SetSessionStateAsync` — enables long-running transaction coordination.
+- **CRITICAL**: Sessions must be enabled at queue/subscription creation time. Cannot be changed after.
+- **CRITICAL**: Partitioning + sessions in Standard tier not recommended. Premium handles both properly.
+
+## Dead-Letter Queue (DLQ)
+
+Every queue and subscription has a DLQ subqueue. Messages move to DLQ when:
+- **MaxDeliveryCount exceeded** (default 10) — poison message protection
+- **TTL expired** — message sat too long without being consumed
+- **Application dead-lettering** — consumer explicitly dead-letters unprocessable messages
+- **Filter evaluation exception** — subscription filter throws error
+- **Auto-forward chain > 4 hops** or destination entity disabled/at capacity
+
+### DLQ Best Practices
+- **ALWAYS monitor DLQ depth** — growing DLQ means broken integration
+- Alert on DLQ count > 0. Investigate immediately.
 - Set `DeadLetterReason` and `DeadLetterDescription` when explicitly dead-lettering for troubleshooting
-
-#### Poison Message Handling
-- A message that repeatedly fails processing → delivery count increments each attempt
-- After `MaxDeliveryCount` (configurable), automatically moved to DLQ
-- **Best practice**: set `MaxDeliveryCount` based on expected transient failure duration (3-5 for fast failures, 10+ for retryable)
-- **Monitor DLQ depth** as a key operational metric — growing DLQ means broken integration
 - Create a DLQ processor to inspect, fix, and resubmit or archive dead-lettered messages
+- Set `MaxDeliveryCount` based on expected transient failure duration (3-5 for fast failures, 10+ for retryable)
 
-### Sessions & Ordering
-- **Sessions**: guarantee FIFO within a session (messages with same `SessionId` processed in order)
-- Session state: consumer can store checkpoint state with `SetSessionStateAsync` — enables long-running transaction coordination
-- **Gotcha**: sessions are immutable after entity creation — must enable at queue/subscription creation time
-- **Gotcha**: partitioning + sessions in Standard tier not recommended; Premium handles both properly
+## Key Features
+
+### Message Deduplication
+- Time window-based using `MessageId`. Catches publisher duplicates within the deduplication window.
+- Enable at queue/topic creation. Set deduplication window (default 10 minutes, max 7 days).
+- Does NOT prevent consumer-side duplicates — consumers still need idempotency.
+
+### Scheduled Delivery
+- Set `ScheduledEnqueueTimeUtc` to delay message availability. Useful for delayed processing, reminders, timed workflows.
+
+### Auto-Forwarding
+- Automatically forward messages from one queue/subscription to another entity. Chain up to 4 hops.
+- Use for fan-out patterns or routing architectures.
+
+### Transactions
+- Group send/complete operations in a transaction scope. All succeed or all fail.
+- Scoped to a single namespace. Cannot span multiple namespaces or other Azure services.
+
+## Security
+
+- **Managed identity** (preferred): Assign Azure RBAC roles (Service Bus Data Sender, Receiver, Owner).
+- **Shared Access Policies** (legacy): Connection strings with send/listen/manage rights. Rotate regularly.
+- **Private endpoints**: Premium tier only. Service Bus accessible only via private IP on your VNet.
+- **Encryption**: At rest (Microsoft-managed or customer-managed keys in Premium). In transit (TLS 1.2).
+
+## Monitoring
+
+- **Key metrics**: Active messages, dead-letter count, incoming/outgoing messages, server errors, throttled requests.
+- **Alerts**: DLQ count > 0, active message count growing (consumers not keeping up), server errors.
+- **Service Bus Explorer** (portal): Peek, receive, send, dead-letter management.
+- **Application Insights**: SDK telemetry for send/receive operations with distributed tracing.

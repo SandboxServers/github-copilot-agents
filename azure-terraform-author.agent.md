@@ -15,6 +15,7 @@ tools:
   - agent
   - com.microsoft/azure/documentation
   - microsoftdocs/mcp/*
+  - io.github.hashicorp/terraform-mcp-server
 model: "Claude Opus 4.6 (copilot)"
 agents:
   - "Azure Apps & Infra Architect"

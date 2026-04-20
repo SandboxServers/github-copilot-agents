@@ -1,15 +1,15 @@
 # Azure Specialty Lead — Knowledge Index
 
-> **Last Updated:** 2026-04-19 — Content extracted from original monolithic knowledge files. No external research applied yet.
+> **Last Updated:** 2025-07-18 — All chunks replaced with MCP-researched content.
 
 Load only the files relevant to your current task. Do NOT load all files at once.
 
 | Topic | File | When to Load |
 |-------|------|-------------|
-| Domain Interconnections | [domain-interconnections.md](domain-interconnections.md) | When understanding how specialty decisions ripple across domains |
-| Work Sequencing | [work-sequencing.md](work-sequencing.md) | When planning the order of specialist work — the dependency chain |
-| Collaboration Protocol | [collaboration-protocol.md](collaboration-protocol.md) | When determining single specialist vs multi-specialist collaboration |
-| Well-Architected Framework | [well-architected-framework.md](well-architected-framework.md) | When evaluating solutions against the five WAF pillars |
-| Anti-Patterns | [anti-patterns.md](anti-patterns.md) | When catching local optimization, missing cross-cutting concerns, or sequencing failures |
-| Solution Design Framework | [solution-design-framework.md](solution-design-framework.md) | When designing end-to-end multi-domain solutions |
-| Technology Decision Trees | [technology-decision-trees.md](technology-decision-trees.md) | When choosing compute, data, integration, or storage services |
+| Coordination Role | [coordination-role.md](coordination-role.md) | When understanding the Specialty Lead's coordination responsibilities across specialists |
+| Cross-Cutting Concerns | [cross-cutting-concerns.md](cross-cutting-concerns.md) | When ensuring identity, networking, monitoring, security, tagging, and naming consistency |
+| Solution Design | [solution-design.md](solution-design.md) | When designing end-to-end multi-domain solutions with the 7-step process |
+| Specialist Handoffs | [specialist-handoffs.md](specialist-handoffs.md) | When managing clean handoffs between specialists with interface contracts |
+| Dependency Management | [dependency-management.md](dependency-management.md) | When planning deployment order and managing Azure service dependencies |
+| Architecture Review | [architecture-review.md](architecture-review.md) | When evaluating solutions against Well-Architected Framework pillars |
+| Escalation Patterns | [escalation-patterns.md](escalation-patterns.md) | When resolving specialist disagreements, cross-cutting conflicts, or deployment blockers |

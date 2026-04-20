@@ -1,41 +1,69 @@
 ## Dataverse
 
-### What Dataverse Actually Is
-- Not just a database — it's a **platform** with built-in security, business logic, API, and storage
-- Built on SQL Server but abstracted with metadata-driven model
-- Every Power Apps Premium and Dynamics 365 plan includes Dataverse
-- Tables (formerly entities), columns (formerly fields), relationships, choices (formerly option sets)
+### Table Design
 
-### Key Concepts
-1. **Tables**: standard (system), custom, virtual (external data without copying)
-2. **Relationships**: 1:N, N:N (with intersection table), polymorphic (regarding/customer)
-3. **Business rules**: no-code conditional logic on forms (show/hide fields, set defaults, validate)
-4. **Calculated/rollup columns**: server-side computations, rollups aggregate child records
-5. **Choices (option sets)**: global (reusable) or local (table-specific) picklists
+**Table Types**
+- **Standard tables** — built-in system tables (Account, Contact, Activity)
+- **Custom tables** — your business-specific tables (prefix with publisher prefix)
+- **Virtual tables** — map to external data sources without copying data into Dataverse
+- **Elastic tables** — Azure Cosmos DB-backed for high-volume, low-latency scenarios
+
+**Column Types**
+- Text (single-line, multi-line, rich text), number (whole, decimal, float, currency)
+- Date/time, yes/no (boolean), choice (option set), lookup, file, image
+- Calculated columns — server-side formulas evaluated on read
+- Rollup columns — aggregate child records (sum, count, min, max, avg)
+- Formula columns — Power Fx expressions, real-time calculation
+
+### Relationships
+- **1:N (one-to-many)** — parent-child, lookup column on the child table
+- **N:N (many-to-many)** — creates an intersection table automatically
+- **Polymorphic** — single lookup references multiple table types (Customer, Regarding)
+- Cascade behaviors: assign, share, unshare, reparent, delete — configure per relationship
+
+### Business Rules
+- No-code conditional logic applied to forms (model-driven and some canvas)
+- Show/hide fields, set field values, set required level, show error messages
+- Scope: entity (server-side) or specific form (client-side only)
+- No looping or complex logic — use plug-ins or Power Automate for that
 
 ### Security Model
-- **Business units** — hierarchical organizational structure
-- **Security roles** — define CRUD permissions per table at different scopes (user/BU/parent-child BU/org)
-- **Teams** — owner teams (own records) and access teams (share records)
-- **Column-level security** — restrict specific columns from specific profiles
-- **Record sharing** — ad-hoc access grants beyond role-based access
-- **Hierarchy security** — managers can see their reports' data
 
-### Solutions
-- **Managed solutions**: deployed to target environments, can't be edited there, cleanly uninstallable
-- **Unmanaged solutions**: editable, used in development environments
-- **Solution layering**: multiple solutions can customize same component — last one wins (active layer)
-- **Segmented solutions**: include only the components you changed, not entire tables
-- **Publisher prefix**: use a consistent, unique publisher prefix (not "new_" or "cr...")
+**Business Units**
+- Hierarchical organizational structure — every user belongs to one business unit
+- Root BU at the top, child BUs nested underneath
+- Security roles are assigned within a business unit context
 
-### Environment Variables
-- Store configuration values that differ between environments (URLs, feature flags, keys)
-- Types: text, number, JSON, yes/no, data source
-- Set **definition** in solution, set **value** per environment (don't store values in the solution itself)
-- **Secret environment variables**: reference Azure Key Vault secrets
-- Critical for ALM — avoid hardcoding environment-specific values in apps/flows
+**Security Roles**
+- Define CRUD+A (Create, Read, Write, Delete, Append, Assign, Share) per table
+- Scope levels: User, Business Unit, Parent-Child BU, Organization
+- Assign multiple roles — permissions are additive (most permissive wins)
 
-### Connection References
-- Abstract connections from solutions so they can be rebound per environment
-- Solution stores the reference, admin/maker provides the actual connection at import/deployment
-- Must be configured for each target environment during deployment
+**Teams**
+- Owner teams — own records, have security roles assigned directly
+- Access teams — dynamic membership, share records without owning them
+- Entra ID group teams — membership synced from Entra ID security groups
+
+**Field-Level Security**
+- Restrict read/update/create on specific columns regardless of table-level permissions
+- Create field security profiles, add columns, assign users/teams
+- Use for sensitive data: SSN, salary, confidential notes
+
+### Views, Charts, and Dashboards
+- **Views** — saved queries (system views managed in solutions, personal views by users)
+- **Charts** — visual representations tied to views
+- **Dashboards** — combine charts, views, iframes, Power BI tiles in one screen
+- All configurable declaratively in model-driven app designer
+
+### Dataverse for Teams
+- Simplified Dataverse included with M365 Teams license (no premium license)
+- Limited to 1M rows, 2 GB per environment, max 5 custom tables
+- Apps built in Teams, accessed in Teams — not available outside Teams
+- Can upgrade to full Dataverse if needs outgrow Teams limitations
+
+### Environment Strategy with Dataverse
+- Each environment gets its own Dataverse instance (isolated data and schema)
+- Dev environment: unmanaged solutions, active development
+- Test/staging: managed solutions, validation and UAT
+- Production: managed solutions only, strict change control
+- Dataverse capacity shared across environments in tenant — monitor usage

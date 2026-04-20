@@ -1,56 +1,170 @@
-## Authentication Patterns
+# Authentication Patterns
 
-### Managed Identity (Azure Automation, Functions, VMs)
+## Auth Hierarchy (Prefer Top to Bottom)
+1. Managed Identity (system-assigned preferred)
+2. Workload Identity Federation (OIDC — no secrets)
+3. Certificate-based (service principal + X.509)
+4. SecretManagement module (local development)
+5. Interactive (development only, never in automation)
+
+## Managed Identity
+
+### System-Assigned (Preferred)
 ```powershell
-# Az modules
+# Azure Automation, Azure Functions, Azure VMs
 Connect-AzAccount -Identity
-# Graph SDK — system-assigned
+
+# Verify identity
+$context = Get-AzContext
+Write-Verbose "Authenticated as: $($context.Account.Id)"
+```
+
+### User-Assigned
+```powershell
+Connect-AzAccount -Identity -AccountId '<client-id-of-user-assigned-mi>'
+```
+
+### With Microsoft Graph
+```powershell
 Connect-MgGraph -Identity
-# Graph SDK — user-assigned
-Connect-MgGraph -Identity -ClientId '00000000-0000-0000-0000-000000000000'
+# For specific scopes (not needed with app permissions, but required with delegated)
+Connect-MgGraph -Identity -ClientId '<client-id>'
 ```
-- System-assigned: tied to resource lifecycle, one per resource
-- User-assigned: independent lifecycle, can share across resources
-- **Best for**: Azure Automation runbooks, Azure Functions, VMs, Container Apps
 
-### Certificate-Based Auth (Service Principals)
-```powershell
-Connect-AzAccount -ServicePrincipal -TenantId $tenant `
-    -ApplicationId $appId -CertificateThumbprint $thumbprint
-Connect-MgGraph -ClientId $appId -TenantId $tenant `
-    -CertificateThumbprint $thumbprint
-Connect-ExchangeOnline -CertificateThumbprint $thumbprint `
-    -AppId $appId -Organization contoso.onmicrosoft.com
+## Workload Identity Federation (OIDC)
+
+### GitHub Actions
+```yaml
+# In workflow YAML - set up OIDC
+permissions:
+  id-token: write
+  contents: read
+
+steps:
+  - name: Azure Login
+    uses: azure/login@v2
+    with:
+      client-id: ${{ secrets.AZURE_CLIENT_ID }}
+      tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+      subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 ```
-- Preferred over client secrets for production workloads
-- Certificates stored in Azure Key Vault or local cert store
-- **Gotcha**: cert must be in `Cert:\CurrentUser\My` or `Cert:\LocalMachine\My` for thumbprint auth
-
-### Workload Identity Federation (Pipelines)
-- GitHub Actions: OIDC token → Azure, no secrets stored
-- Azure Pipelines: workload identity federation service connection
-- No credentials to rotate — identity proven by platform token
-- **Pattern**: `az login --federated-token` or `Connect-AzAccount` with federated token
-
-### SecretManagement Module (PS 7)
 ```powershell
+# PowerShell in GitHub Actions after azure/login
+# Az context is already set — just use it
+$context = Get-AzContext
+Write-Output "Connected to $($context.Subscription.Name)"
+```
+
+### Azure Pipelines OIDC
+```powershell
+# In Azure Pipelines with workload identity federation service connection
+# Use AzurePowerShell@5 task — handles OIDC token exchange automatically
+# task: AzurePowerShell@5
+# inputs:
+#   azureSubscription: 'my-wif-service-connection'
+#   ScriptType: 'InlineScript'
+#   Inline: |
+#     Get-AzContext | Select-Object Account, Subscription
+```
+
+## Certificate-Based Authentication
+
+### From Local Certificate Store
+```powershell
+$certThumbprint = 'ABC123...'
+$connectParams = @{
+    ApplicationId  = '<app-registration-client-id>'
+    CertThumbprint = $certThumbprint
+    TenantId       = '<tenant-id>'
+}
+Connect-AzAccount @connectParams
+```
+
+### From Azure Key Vault (Retrieve + Connect)
+```powershell
+# First connect with managed identity to get the cert
+Connect-AzAccount -Identity
+
+# Retrieve certificate from Key Vault
+$cert = Get-AzKeyVaultCertificate -VaultName 'MyKeyVault' -Name 'MyCert'
+$secret = Get-AzKeyVaultSecret -VaultName 'MyKeyVault' -Name $cert.Name -AsPlainText
+
+# Convert to X509
+$certBytes = [Convert]::FromBase64String($secret)
+$x509 = [System.Security.Cryptography.X509Certificates.X509Certificate2]::new($certBytes)
+
+# Connect to Graph with the certificate
+Connect-MgGraph -Certificate $x509 -ClientId '<client-id>' -TenantId '<tenant-id>'
+```
+
+## Token Acquisition for REST Calls
+```powershell
+# Get raw access token for Azure Resource Manager
+$token = Get-AzAccessToken -ResourceUrl 'https://management.azure.com/'
+$headers = @{ Authorization = "Bearer $($token.Token)" }
+Invoke-RestMethod -Uri $uri -Headers $headers
+
+# Get token for Microsoft Graph
+$graphToken = Get-AzAccessToken -ResourceUrl 'https://graph.microsoft.com/'
+
+# Get token for custom API
+$customToken = Get-AzAccessToken -ResourceUrl 'api://<your-app-id>'
+```
+
+## SecretManagement Module (Local Development)
+```powershell
+# Install the framework + a vault backend
 Install-Module Microsoft.PowerShell.SecretManagement
-Install-Module Microsoft.PowerShell.SecretStore  # local vault
-Register-SecretVault -Name 'AzKeyVault' -ModuleName Az.KeyVault -VaultParameters @{ AZKVaultName = 'my-vault' }
-$secret = Get-Secret -Name 'ApiKey' -Vault 'AzKeyVault'
-```
-- Abstraction layer — same cmdlets regardless of vault backend
-- Extension vaults: Azure Key Vault, KeePass, LastPass, HashiCorp Vault, CredMan
-- Cross-platform local store with SecretStore module
-- **Best practice**: use SecretManagement for dev/local, managed identity for production
+Install-Module Microsoft.PowerShell.SecretStore
 
-### Credential Management
+# Register a vault
+Register-SecretVault -Name 'LocalDev' -ModuleName Microsoft.PowerShell.SecretStore
+
+# Store and retrieve secrets
+Set-Secret -Name 'GraphClientSecret' -Vault 'LocalDev' -Secret (Read-Host -AsSecureString)
+$secret = Get-Secret -Name 'GraphClientSecret' -Vault 'LocalDev' -AsPlainText
+
+# Az Key Vault as a vault backend
+Install-Module Az.KeyVault
+Register-SecretVault -Name 'AzKV' -ModuleName Az.KeyVault -VaultParameters @{
+    AZKVaultName = 'MyKeyVault'
+    SubscriptionId = '<sub-id>'
+}
+```
+
+## Permission Scoping / Least Privilege
+- Start with the minimum permissions needed, expand only when required
+- Use `Find-MgGraphCommand -CommandName 'Get-MgUser'` to discover required Graph permissions
+- Use `-Scopes` parameter on `Connect-MgGraph` for delegated scenarios
+- For app permissions, configure in Azure AD app registration — not at runtime
+- Document required permissions in comment-based help for every script
+
+## Auth Anti-Patterns (Never Do This)
+- Never store credentials in scripts, environment variables on shared systems, or source control
+- Never use `ConvertTo-SecureString -AsPlainText -Force` with a hardcoded password
+- Never use client secrets when certificates or managed identity are available
+- Never disable certificate validation (`ServerCertificateValidationCallback`)
+- Never share service principal credentials between environments (dev/staging/prod get separate SPs)
+
+## Auth Context Management
 ```powershell
-# In Azure Automation
-$credential = Get-AutomationPSCredential -Name 'ServiceAccount'
-# In Azure Functions
-$secret = Get-AzKeyVaultSecret -VaultName $vaultName -Name $secretName -AsPlainText
-# In local dev with SecretManagement
-$apiKey = Get-Secret -Name 'ApiKey' -AsPlainText
-# NEVER: hardcode credentials, store in source, use ConvertTo-SecureString with plaintext key
+# Switch between subscriptions
+Set-AzContext -Subscription '<subscription-name-or-id>'
+
+# Run against multiple subscriptions
+$subscriptions = Get-AzSubscription | Where-Object State -eq 'Enabled'
+foreach ($sub in $subscriptions) {
+    Set-AzContext -Subscription $sub.Id | Out-Null
+    # Do work in this subscription context
+}
+
+# Disconnect cleanly in finally blocks
+try {
+    Connect-AzAccount -Identity
+    # ... do work ...
+}
+finally {
+    Disconnect-AzAccount -ErrorAction SilentlyContinue | Out-Null
+    Disconnect-MgGraph -ErrorAction SilentlyContinue | Out-Null
+}
 ```

@@ -1,12 +1,12 @@
 # M365 Engineer — Knowledge Index
 
-> **Last Updated:** 2026-04-19 — Content extracted from original monolithic knowledge files. No external research applied yet.
+> **Last Updated:** 2025-07-18 — All chunks replaced with MCP-researched content.
 
 Load only the files relevant to your current task. Do NOT load all files at once.
 
 | Topic | File | When to Load |
 |-------|------|-------------|
-| Platform Overview | [platform-overview.md](platform-overview.md) | When understanding the M365 platform stack or service relationships |
+| M365 Security | [platform-overview.md](platform-overview.md) | When working with Defender for Office 365, MFA, Conditional Access, Secure Score, or threat management |
 | Tenant Architecture | [tenant-architecture.md](tenant-architecture.md) | When designing single/multi-tenant, Multi-Geo, or sovereign cloud configurations |
 | Exchange Online | [exchange-online.md](exchange-online.md) | When working with Exchange — mail flow, connectors, transport rules, hybrid |
 | SharePoint Online | [sharepoint-online.md](sharepoint-online.md) | When working with SharePoint — site types, hubs, content types, search, migration |

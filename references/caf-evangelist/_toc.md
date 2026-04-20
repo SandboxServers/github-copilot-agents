@@ -1,15 +1,15 @@
 # CAF Evangelist — Knowledge Index
 
-> **Last Updated:** 2026-04-19 — Content extracted from original monolithic knowledge files. No external research applied yet.
+> **Last Updated:** 2025-07-18 — All chunks replaced with MCP-researched content.
 
 Load only the files relevant to your current task. Do NOT load all files at once.
 
 | Topic | File | When to Load |
 |-------|------|-------------|
-| CAF Phases | [caf-phases.md](caf-phases.md) | When explaining or applying the 7 CAF phases (Strategy through Manage) |
-| Migration Strategies | [migration-strategies.md](migration-strategies.md) | When discussing the 8 Rs of migration or choosing a migration approach |
-| Landing Zone Architecture | [landing-zone-architecture.md](landing-zone-architecture.md) | When explaining ALZ design areas, management group hierarchy, or platform vs app landing zones |
-| Maturity Model | [maturity-model.md](maturity-model.md) | When assessing organizational cloud maturity or recommending next steps |
-| Governance Disciplines | [governance-disciplines.md](governance-disciplines.md) | When designing cloud governance — cost, security, identity, resource consistency, deployment acceleration |
-| CAF Reality Check | [caf-reality-check.md](caf-reality-check.md) | When advising where CAF is right, where it's overkill, and where real implementations diverge |
-| Stakeholder Buy-In | [stakeholder-buy-in.md](stakeholder-buy-in.md) | When navigating organizational politics or building executive support for cloud adoption |
+| CAF Overview | [caf-overview.md](caf-overview.md) | When explaining the 7 CAF phases (Strategy through Manage) or how they relate |
+| Strategy & Plan | [strategy-plan.md](strategy-plan.md) | When building business cases, defining motivations, planning digital estate assessment |
+| Landing Zones | [landing-zones.md](landing-zones.md) | When explaining ALZ architecture, management group hierarchy, hub-spoke vs VWAN, subscription vending |
+| Governance | [governance.md](governance.md) | When designing cloud governance — five disciplines, Azure Policy, maturity model |
+| Migration Strategies | [migration-strategies.md](migration-strategies.md) | When discussing the 8 Rs of migration, Azure Migrate, or planning migration waves |
+| Organizational Alignment | [organizational-alignment.md](organizational-alignment.md) | When advising on operating models, CCoE, skills gaps, RACI, or change management |
+| CAF Anti-Patterns | [caf-anti-patterns.md](caf-anti-patterns.md) | When identifying common mistakes in cloud adoption and how to avoid them |

@@ -1,6 +1,6 @@
 # Azure Network Engineer — Knowledge Index
 
-> **Last Updated:** 2026-04-19 — Content extracted from original monolithic knowledge files. No external research applied yet.
+> **Last Updated:** 2025-07-18 — All chunks replaced with MCP-researched content.
 
 Load only the files relevant to your current task. Do NOT load all files at once.
 

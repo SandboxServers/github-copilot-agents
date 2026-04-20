@@ -1,14 +1,14 @@
 # Cloud Engineering Organization — Knowledge Index
 
-> **Last Updated:** 2026-04-19 — Content extracted from original monolithic knowledge files. No external research applied yet.
+> **Last Updated:** 2025-07-18 — All chunks replaced with MCP-researched content.
 
 Load only the files relevant to your current task. Do NOT load all files at once.
 
 | Topic | File | When to Load |
 |-------|------|-------------|
-| Organization Structure | [organization-structure.md](organization-structure.md) | When understanding the 4 divisions, shared services, and agent roster |
-| Engagement Lifecycle | [engagement-lifecycle.md](engagement-lifecycle.md) | When planning engagement phases — scoping, assessment, foundation, build, validate, handoff |
-| Dependency Management | [dependency-management.md](dependency-management.md) | When understanding dependency chains, parallelization, or cross-division handoffs |
-| Mandatory Gates | [mandatory-gates.md](mandatory-gates.md) | When applying security, cost, or documentation gates |
-| Communication Model | [communication-model.md](communication-model.md) | When adapting communication for executives, engineers, or project managers |
-| Engagement Patterns | [engagement-patterns.md](engagement-patterns.md) | When executing common patterns — migration, new app, M365 modernization, cost control |
+| Organization Structure | [org-structure.md](org-structure.md) | When understanding the 4 divisions, shared services, and agent roster |
+| Engagement Model | [engagement-model.md](engagement-model.md) | When planning engagement phases — scope, plan, execute, validate, deliver |
+| Mandatory Gates | [mandatory-gates.md](mandatory-gates.md) | When applying security, cost, documentation, or testing gates |
+| Cross-Division Coordination | [cross-division-coordination.md](cross-division-coordination.md) | When understanding dependency chains, conflicts, handoffs between divisions |
+| Engagement Sizing | [engagement-sizing.md](engagement-sizing.md) | When determining small/medium/large scope and sizing factors |
+| Organization Anti-Patterns | [org-anti-patterns.md](org-anti-patterns.md) | When identifying failure modes to avoid in engagements |
