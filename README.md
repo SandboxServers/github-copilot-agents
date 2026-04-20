@@ -152,7 +152,7 @@ These agents are researchers and advisors. They consult their knowledge base and
 Each agent's knowledge is split into focused topic files instead of one large monolithic file:
 
 ```
-references/
+agent-memory/
   azure-database-specialist/
     _toc.md                    ← Table of contents (agent reads this first)
     data-store-selection.md    ← When choosing between database services
@@ -244,12 +244,15 @@ Model is configured per-agent and is **not inherited** when one agent calls anot
 ## File Structure
 
 ```
-├── *.agent.md                    # Agent definitions (31 files)
-├── references/
+├── agents/                       # Agent definitions (31 files)
+│   └── *.agent.md
+├── agent-memory/               # Chunked knowledge bases
 │   ├── <agent-name>/
 │   │   ├── _toc.md               # Knowledge index with "when to load" guidance
 │   │   └── *.md                  # Topic-specific knowledge chunks
 │   └── ... (28 agent knowledge directories)
+├── prompts/                      # Original persona prompts that seeded agents
+├── skills/                       # (Planned) Cross-agent reusable playbooks
 └── README.md
 ```
 
