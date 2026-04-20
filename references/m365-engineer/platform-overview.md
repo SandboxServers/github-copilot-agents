@@ -1,95 +1,74 @@
-## M365 as a Platform — The Integrated Stack
+## M365 Security
 
-```
-Microsoft 365 Platform
-├── Productivity & Collaboration
-│   ├── Exchange Online (email, calendaring, shared mailboxes)
-│   ├── SharePoint Online (sites, content, search, intranet)
-│   ├── OneDrive for Business (personal file storage, sync)
-│   ├── Microsoft Teams (chat, meetings, calling, apps platform)
-│   └── Microsoft 365 Apps (Word, Excel, PowerPoint, Outlook desktop)
-│
-├── Security & Compliance (Microsoft Purview)
-│   ├── Sensitivity Labels (classification + encryption)
-│   ├── Data Loss Prevention (DLP across workloads)
-│   ├── Retention Policies & Labels (lifecycle management)
-│   ├── Insider Risk Management (behavioral analytics)
-│   ├── eDiscovery (Standard + Premium)
-│   ├── Communication Compliance
-│   ├── Information Barriers
-│   └── Audit (Standard + Premium)
-│
-├── Endpoint Management (Microsoft Intune)
-│   ├── Device Compliance Policies
-│   ├── Configuration Profiles
-│   ├── App Deployment & Protection
-│   ├── Windows Autopilot
-│   └── Conditional Access integration
-│
-├── Power Platform
-│   ├── Power Apps (citizen dev + pro dev)
-│   ├── Power Automate (workflow automation)
-│   ├── Power BI (analytics, dashboards)
-│   └── Power Pages (external-facing portals)
-│
-├── Identity & Access (Microsoft Entra ID)
-│   ├── Conditional Access
-│   ├── PIM (Privileged Identity Management)
-│   └── App registrations / Enterprise apps
-│
-└── Security (Microsoft Defender)
-    ├── Defender for Office 365 (email protection)
-    ├── Defender for Endpoint (device protection)
-    ├── Defender for Identity (identity protection)
-    └── Defender for Cloud Apps (CASB / SaaS protection)
-```
+### Defender for Office 365
 
-## Common Mistakes & Anti-Patterns
+| Feature | Plan 1 | Plan 2 |
+|---------|--------|--------|
+| Safe Attachments | Yes | Yes |
+| Safe Links | Yes | Yes |
+| Anti-phishing policies | Basic | Advanced (impersonation, mailbox intelligence) |
+| Real-time reports | Yes | Yes |
+| Threat Explorer | No | Yes (full) |
+| Automated investigation and response | No | Yes |
+| Attack simulation training | No | Yes |
 
-1. **Treating M365 as individual apps** → it's a platform — Exchange, SharePoint, Teams, Purview, Intune should work together, not be managed as silos
-2. **No tenant-wide DLP baseline** → data leaks through the gaps between workloads
-3. **Default Power Platform environment uncontrolled** → every user can create apps and flows connecting to anything
-4. **No sensitivity labels deployed** → you can't protect what you can't classify
-5. **Skipping retention policies** → legal hold nightmare when litigation hits
-6. **No mail authentication (SPF/DKIM/DMARC)** → domain gets spoofed, deliverability drops
-7. **Buying E5 for everyone "just in case"** → targeted E5 for compliance/security staff + E3 baseline saves significant spend
-8. **No conditional access on Intune compliance** → compliance policies alone don't block access — they're just evaluation without enforcement
-9. **SharePoint flat structure** → no hub sites, no consistent navigation, search becomes useless
-10. **Migration without assessment** → SMAT, permission audits, and content cleanup should happen BEFORE migration starts
+- **Safe Attachments**: detonates attachments in sandbox, blocks malicious files
+- **Safe Links**: rewrites URLs, checks at time-of-click, blocks malicious destinations
+- **Anti-phishing**: detects impersonation of users and domains, mailbox intelligence for contact patterns
 
-## Questions This Engineer Always Asks
+### Defender for Endpoint Integration
+- Endpoint detection and response (EDR) — investigate and remediate threats on devices
+- Threat and vulnerability management — identify unpatched software, misconfigurations
+- Attack surface reduction (ASR) rules — block common malware techniques
+- Integrates with Intune compliance — device risk level feeds into Conditional Access
+- Automated investigation and response for endpoint alerts
 
-### Tenant & Architecture
-- Single tenant or multi-tenant? Any sovereign cloud requirements?
-- Multi-Geo needed? Where is data residency required?
-- What licensing is in place? E3, E5, or mix? Any add-ons?
+### Attack Simulation Training
+- Phishing simulations: credential harvest, link in attachment, drive-by URL, OAuth consent
+- Training modules assigned automatically to users who fail simulations
+- Campaigns: track completion rates, repeat offenders, improvement over time
+- Requires Defender for Office 365 Plan 2 or E5
 
-### Mail & Communication
-- Where does MX point today? Any third-party filtering?
-- SPF, DKIM, DMARC — all configured? DMARC policy set to reject?
-- Hybrid Exchange? If so, what's the migration timeline?
-- Any custom transport rules? How many, what do they do?
+### Security Defaults vs Conditional Access
 
-### Content & Collaboration
-- SharePoint hub site strategy defined? How many hubs?
-- Content type hub in use? Consistent metadata across sites?
-- OneDrive Known Folder Move (KFM) enabled?
-- Teams governance — who can create teams? Naming policy? Expiration?
+| Feature | Security Defaults | Conditional Access |
+|---------|-------------------|-------------------|
+| MFA enforcement | All users | Granular — by user, app, risk, location |
+| Legacy auth blocking | Yes | Configurable per policy |
+| Customization | None | Full (conditions, grants, session controls) |
+| License required | Free | Entra ID P1 minimum |
+| Recommendation | Small orgs, no P1 | All orgs with P1 or higher |
 
-### Security & Compliance
-- Sensitivity labels deployed? Auto-labeling configured?
-- DLP policies active across which workloads?
-- Retention policies in place? Any regulatory requirements?
-- Insider risk management enabled? HR connector configured?
+### MFA Enforcement
+- **Security defaults**: require MFA for all users (simple, no configuration)
+- **Conditional Access**: require MFA based on risk, location, device, app sensitivity
+- **Per-user MFA**: legacy approach — avoid, use Conditional Access instead
+- **Authentication methods**: Microsoft Authenticator (preferred), FIDO2, Windows Hello, phone, SMS (least secure)
+- **Number matching**: enabled by default — prevents MFA fatigue attacks
 
-### Endpoints & Devices
-- Intune enrolled? What platforms? (Windows, macOS, iOS, Android)
-- Compliance policies enforced via conditional access?
-- App protection policies for BYOD scenarios?
-- Windows Autopilot for new device provisioning?
+### Legacy Authentication Blocking
+- Legacy protocols (POP, IMAP, SMTP AUTH, EWS basic auth) do not support MFA
+- Block via Conditional Access: condition = client apps → legacy authentication clients → block
+- Monitor sign-in logs for legacy auth usage before blocking
+- Exceptions: may need SMTP AUTH for multifunction printers or LOB apps (use per-user exception)
 
-### Power Platform
-- Default environment locked down?
-- DLP policies in place for Power Platform?
-- CoE toolkit deployed for visibility?
-- Citizen dev program — is it enabled and governed, or wild west?
+### Secure Score
+- Measures security posture across identity, devices, apps, data, infrastructure
+- Recommendations prioritized by impact and implementation difficulty
+- Track improvement over time, compare against similar organizations
+- Actions: enable MFA, disable legacy auth, configure DLP, enable audit logging
+- Not a compliance certification — a guidance and tracking tool
+
+### Threat Explorer
+- Real-time and historical view of email threats (phishing, malware, campaigns)
+- Investigate: filter by sender, recipient, subject, delivery action, detection technology
+- Actions: soft delete, hard delete, move to junk, trigger investigation
+- Campaign views: group related threats, identify targeted users
+- Requires Defender for Office 365 Plan 2
+
+### Quarantine Management
+- Quarantined messages: admin review, user review (configurable per policy)
+- Quarantine policies: control what users can do (preview, release, request release, delete)
+- Admin quarantine: global admin or security admin release or delete
+- Notification: quarantine digest emails for end users (configurable frequency)
+- Retention: quarantined items retained for 30 days by default
