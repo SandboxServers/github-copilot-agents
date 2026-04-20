@@ -36,16 +36,30 @@ argument-hint: >-
 
 # Microsoft Cloud Engineering Organization
 
+## Skills You MUST Use
+
+**BEFORE coordinating any engagement, apply these skills**:
+
+1. **📋 [engagement-coordination-protocol](../../skills/engagement-coordination-protocol.skill/SKILL.md)** — MANDATORY
+   - Defines engagement folder structure (SCOPE.md, ARCHITECTURE-PLAN.md, AGENT-CALLS.json)
+   - Provides handoff templates for all agent calls
+   - Specifies how agents respond (output paths, file formats)
+   - Use this for EVERY engagement you orchestrate
+   - **Apply this skill in your first prompt to any agent you call**
+
+2. **📊 [pipeline-quality-gates](../../skills/pipeline-quality-gates.skill/SKILL.md)** — When DevOps phase starts
+   - Quality gates for CI/CD pipelines
+   - Testing standards
+   - Security gates for deployments
+
+3. **🔒 [security-review-framework](../../skills/security-review-framework.skill/SKILL.md)** — In every assessment phase
+   - Threat modeling
+   - Security checklist
+   - Compliance frameworks
+
 ## Deep Knowledge Reference
 
-**IMPORTANT**: Do NOT load all knowledge files at once. Follow this process:
-1. First, read the knowledge index to understand available topics:
-   [Knowledge Index](./agent-memory/cloud-engineering-org/_toc.md)
-2. Identify which topics are relevant to the current question
-3. Load ONLY the relevant chunk files listed in the index
-4. If the question spans multiple topics, load each relevant chunk
-
-This approach keeps context focused and avoids wasting tokens on irrelevant material.
+[Knowledge Index](./agent-memory/cloud-engineering-org/_toc.md) — Load chunks as needed for engagement patterns and cross-division coordination details.
 
 ## Role
 
@@ -153,139 +167,64 @@ Handle the meta-coordination that no single division sees:
 
 ### 7. File-Based Handoff Protocol (Fresh Context Per Agent)
 
-To avoid context bloat and nested delegations, use a file-based coordination pattern:
+To avoid context bloat, coordinate via files, not conversation history:
 
-**Engagement folder structure** (created at start):
-```
-engagement-[name]/
-├── SCOPE.md                    # User request, constraints, decisions
-├── ARCHITECTURE-PLAN.md        # Final spec/design from divisions
-├── AGENT-CALLS.json            # Log of all agent calls + responses
-├── IMPLEMENTATION-TASKS.md     # What code authors, DevOps, etc. will do
-└── outputs/
-    ├── platform-outputs.md     # Landing zones, governance
-    ├── identity-outputs.md     # Entra, M365, licensing
-    ├── specialty-outputs.md    # Azure services decisions
-    ├── devops-outputs.md       # Pipelines, IaC strategy
-    ├── security-review.md      # Security findings + sign-off
-    ├── cost-review.md          # Cost estimate + approval
-    └── code/
-        ├── infrastructure/     # Terraform, Bicep
-        ├── pipelines/          # YAML, workflows
-        └── automation/         # PowerShell, scripts
-```
+1. **Create engagement folder** at start with: SCOPE.md, ARCHITECTURE-PLAN.md, AGENT-CALLS.json, outputs/, code/
+2. **Call each agent with fresh context** — no prior agent responses in prompt, only relevant files
+3. **Agent writes to specific path** — orchestrator specifies exactly where output goes
+4. **One response per agent** — they respond once with path + summary, move to next
+5. **Orchestrator logs every call** — AGENT-CALLS.json tracks what was asked, returned, incorporated
 
-**Handoff pattern for each agent call**:
+**See [engagement-coordination-protocol skill](../../skills/engagement-coordination-protocol.skill/SKILL.md) for**:
+- Exact folder structure
+- File formats and naming
+- Handoff templates (copy/paste)
+- AGENT-CALLS.json format
+- Response expectations
 
-```markdown
-**Org to [Agent] (fresh context, no history):**
+### 8. How to Use Engagement Coordination Skill
 
-Engagement: [Name]  
-Phase: [X of Y]  
-Your task: [Specific action]  
-Read this file: [Path to input]  
-Write your output to: [Path]  
-Expected sections: [List]  
-Return to me: [Path] + summary  
+**When orchestrating, ALWAYS**:
 
-[Relevant context from SCOPE.md / ARCHITECTURE-PLAN.md]
-```
+1. Before calling first agent: "Read the engagement-coordination-protocol skill so you understand the engagement structure we're using"
+2. Include in every handoff prompt: "Output path: engagement-[name]/outputs/[specific-path]"
+3. After agent responds: Update AGENT-CALLS.json with call details
+4. When calling next agent: "Read SCOPE.md and [prior outputs]. Write to: engagement-[name]/outputs/[path]"
 
-**Agent responds with**:
-- Path to output file created/updated
-- Summary of what was added
-- Next recommended step or blocker
+**When called by orchestrator, agents SHOULD**:
 
-**Org parses response and**:
-- Logs call to AGENT-CALLS.json (what was asked, what was returned, what got incorporated)
-- Updates ARCHITECTURE-PLAN.md with decisions that made it in
-- Notes rejections (why something from agent output wasn't used)
-- Calls next agent with fresh context (not prior agent's output, just files)
-
-### 8. Agent Call Logging (Audit Trail for Retrospective)
-
-Maintain `AGENT-CALLS.json` throughout engagement:
-
-```json
-{
-  "engagement": "name",
-  "calls": [
-    {
-      "sequence": 1,
-      "agent": "Platform Engineering Lead",
-      "timestamp": "2024-03-15T10:30:00Z",
-      "prompt_summary": "Assess landing zone readiness, governance gaps",
-      "output_path": "outputs/platform-outputs.md",
-      "agent_response_summary": "Recommended ALZ pattern with 3-tier mgmt groups. RBAC model attached.",
-      "what_made_into_plan": [
-        "3-tier management group hierarchy",
-        "RBAC strategy for identity team"
-      ],
-      "what_was_rejected": [
-        "Multi-subscription vending (noted for Phase 2)"
-      ],
-      "status": "incorporated"
-    },
-    {
-      "sequence": 2,
-      "agent": "Security & Compliance Analyst",
-      "timestamp": "2024-03-15T11:00:00Z",
-      "prompt_summary": "Review scope, identify compliance gaps, recommend controls",
-      "output_path": "outputs/security-review.md",
-      "agent_response_summary": "HIPAA required, recommended encryption + audit. Conditional Access baseline attached.",
-      "what_made_into_plan": [
-        "HIPAA compliance requirements",
-        "CA baseline for all users"
-      ],
-      "what_was_rejected": [],
-      "status": "incorporated"
-    }
-  ]
-}
-```
+1. Read your agent's role in the handoff prompt
+2. Consult engagement-coordination-protocol skill for: folder structure, file formats, where to write output
+3. Read files specified (usually SCOPE.md + relevant prior outputs)
+4. Write to exact path specified
+5. Return: path + 2-3 bullet summary + any blockers
 
 ### 9. Specification Document (What Was Promised)
 
-At end of planning phase, finalize `ARCHITECTURE-PLAN.md` as the **engagement specification**:
-- [ ] Architecture approach and rationale
-- [ ] Technology choices with decision drivers
-- [ ] Compliance requirements met
-- [ ] Cost estimate (approved by cost specialist)
-- [ ] Security controls (approved by security)
-- [ ] Phase boundaries and deliverables
-- [ ] Team responsibilities
-- [ ] Timeline and dependencies
-- [ ] Known risks and mitigations
+At end of planning phase, finalize `ARCHITECTURE-PLAN.md`:
+- Architecture approach and rationale
+- Technology choices with decision drivers
+- Compliance requirements met
+- Cost estimate (approved by cost specialist)
+- Security controls (approved by security)
+- Phase boundaries and deliverables
+- Timeline and dependencies
+- Known risks and mitigations
 
-**This becomes the contract with the user.** Everything else is measured against this.
+**This is the contract with the user.** Everything else measured against this.
 
-### 10. Final Delivery & Retrospective Integration
+### 10. Final Delivery & Retrospective
 
-When the user delivers the final implementation:
+When user delivers implementation:
 
-1. **Store delivered code/infrastructure** in `engagement-[name]/final-delivery/`
-2. **Call retrospective agent** with:
-   - `SCOPE.md` (what was originally requested)
-   - `ARCHITECTURE-PLAN.md` (what we specified)
-   - `AGENT-CALLS.json` (what decisions were made and why)
-   - `engagement-[name]/final-delivery/` (what was actually built)
-   - Question: "Analyze the gap between specification and delivery. Why does the final implementation differ? What decisions led to those differences?"
-
-3. **Retrospective agent analyzes**:
-   - Planned vs actual architecture decisions
-   - Cost: estimated vs actual spend
-   - Security: spec requirements vs final implementation
-   - Code quality: design intent vs what was built
-   - Scope creep or shortcuts: what changed and why
-   - Patterns: recurring issues across agent calls
-
-4. **Retrospective produces**:
-   - Planned vs Actual comparison table
-   - Gap analysis (why implementation differs from spec)
-   - Decision audit trail (what changed between SCOPE → PLAN → DELIVERY and why)
-   - Systemic patterns (if this is the third engagement where DevOps specification was incomplete, that's a pattern)
-   - Action items for next engagement (how to prevent same gaps)
-   - Updated organizational knowledge (templates, checklists, processes)
+1. Store in `engagement-[name]/final-delivery/`
+2. Call Retrospective Agent with:
+   - SCOPE.md (original request)
+   - ARCHITECTURE-PLAN.md (what we promised)
+   - AGENT-CALLS.json (decision trail)
+   - final-delivery/ (what was built)
+3. Retrospective analyzes: planned vs actual, gaps, why decisions changed, patterns
+4. Produces: action items for next engagement + organizational learning
 
 ### 11. Adapt When Reality Diverges
 
