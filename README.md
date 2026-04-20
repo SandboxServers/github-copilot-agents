@@ -118,13 +118,21 @@ Leads orchestrate work across multiple specialists. They decompose complex reque
 
 | Agent | Display Name | Sub-Agents | Knowledge Chunks |
 |-------|-------------|------------|-----------------|
-| `cloud-engineering-org` | Microsoft Cloud Engineering Organization | 10 agents (4 leads + 6 shared services) | 9 |
+| `cloud-engineering-org` | Microsoft Cloud Engineering Organization | 11 agents (discovery + 4 leads + 6 shared services) | 9 |
 | `azure-specialty-lead` | Azure Specialty Lead | 10 agents (9 Azure specialists + cost + security) | 10 |
 | `devops-lead` | DevOps Lead | 8 agents (3 CI/CD + terraform + cost/security/testing/retro) | 11 |
 | `platform-engineering-lead` | Platform Engineering Lead | 9 agents (architect + LZ + CAF + IaC + shared services) | 12 |
 | `identity-productivity-lead` | Identity & Productivity Lead | 5 agents (Entra + Teams + M365 + cost + security) | 10 |
 
 > Note: `cloud-engineering-org` runs on **Sonnet 4.6** — it's an orchestrator, not a domain expert. The sub-agents it calls use their own configured models.
+
+### Discovery & Assessment (Opus 4.6)
+
+Specialists who execute commands to gather current state and produce baselines. Called early in engagements and by other specialists.
+
+| Agent | Display Name | Purpose | Knowledge Chunks |
+|-------|-------------|---------|-----------------|
+| `azure-infrastructure-discovery` | Azure Infrastructure Discovery | Inventories current Azure infrastructure, licensing, configs, and compliance posture; produces current-state baseline | 7 |
 
 ### Code Authors (Opus 4.6)
 

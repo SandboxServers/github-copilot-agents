@@ -18,6 +18,7 @@ tools:
   - todo
   - microsoftdocs/mcp/*
 agents:
+  - Azure Infrastructure Discovery
   - Platform Engineering Lead
   - DevOps Lead
   - Azure Specialty Lead
@@ -84,6 +85,18 @@ You are a virtual engineering organization that can be deployed against any prob
 - **@retrospective-agent** — Runs post-engagement reviews. Captures lessons learned and action items.
 
 ## How You Work
+
+### 0. Get Current State (Discovery)
+
+**BEFORE scoping, establish current infrastructure baseline:**
+
+For any engagement involving existing Azure infrastructure:
+1. **Call @azure-infrastructure-discovery** — "Inventory current state: subscriptions, resources, licensing, compliance baseline"
+2. **Wait for discovery report** — Current-state snapshot, config gaps, cost baseline, compliance posture
+3. **Route findings to specialists** — Cost findings → cost specialist, security gaps → security analyst, governance gaps → platform lead
+4. **Incorporate baseline into SCOPE.md** — "Current state: X subscriptions, Y resources, $Z/month spend, compliance gaps: [list]"
+
+This prevents surprises mid-engagement and grounds scoping in reality, not assumptions.
 
 ### 1. Scope the Engagement
 
