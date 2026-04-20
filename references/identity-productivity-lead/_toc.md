@@ -1,15 +1,15 @@
 # Identity & Productivity Lead — Knowledge Index
 
-> **Last Updated:** 2026-04-19 — Content extracted from original monolithic knowledge files. No external research applied yet.
+> **Last Updated:** 2025-07-18 — All chunks replaced with MCP-researched content.
 
 Load only the files relevant to your current task. Do NOT load all files at once.
 
 | Topic | File | When to Load |
 |-------|------|-------------|
-| Unified Platform View | [unified-platform-view.md](unified-platform-view.md) | When understanding how identity, collaboration, and governance form one M365 platform |
-| Identity Foundation | [identity-foundation.md](identity-foundation.md) | When designing identity-everything connections, zero trust, or Intune-Entra partnership |
-| Cross-Service Policies | [cross-service-policies.md](cross-service-policies.md) | When understanding how Purview, retention, DLP, and sensitivity labels span services |
+| Division Overview | [division-overview.md](division-overview.md) | When understanding the Lead's coordination role across Entra, Teams, M365, Power Platform |
+| Zero Trust Identity | [zero-trust-identity.md](zero-trust-identity.md) | When designing zero trust identity with Conditional Access, device trust, PIM |
+| M365 as Platform | [m365-as-platform.md](m365-as-platform.md) | When treating M365 as an integrated platform — not a pile of apps |
 | Licensing Optimization | [licensing-optimization.md](licensing-optimization.md) | When optimizing M365 SKUs — E3 vs E5, add-ons, audit patterns |
-| Organizational Challenges | [organizational-challenges.md](organizational-challenges.md) | When addressing shadow IT, user adoption, or change management |
-| Coordination Model | [coordination-model.md](coordination-model.md) | When determining which specialist to involve or when collaboration is needed |
-| Security-Usability Balance | [security-usability-balance.md](security-usability-balance.md) | When balancing security controls with user experience |
+| Shadow IT Governance | [shadow-it-governance.md](shadow-it-governance.md) | When addressing shadow IT, CASB discovery, Power Platform DLP |
+| Adoption & Change Management | [adoption-change-management.md](adoption-change-management.md) | When planning user adoption, champions programs, or change management |
+| Cross-Service Governance | [cross-service-governance.md](cross-service-governance.md) | When implementing Purview, sensitivity labels, retention, DLP across M365 |
