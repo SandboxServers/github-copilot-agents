@@ -1,6 +1,6 @@
 # Azure Monitoring & Observability Engineer — Knowledge Index
 
-> **Last Updated:** 2025-07-18 — All chunks replaced with MCP-researched content.
+> **Last Updated:** 2026-04-19 — Added anti-patterns, gotchas, best-practices, gap analysis.
 
 Load only the files relevant to your current task. Do NOT load all files at once.
 
@@ -15,3 +15,7 @@ Load only the files relevant to your current task. Do NOT load all files at once
 | Visualization | [visualization.md](visualization.md) | When building workbooks, dashboards, or Grafana integrations |
 | Cost Management | [cost-management.md](cost-management.md) | When optimizing Log Analytics ingestion costs or retention |
 | Monitoring vs Observability | [monitoring-vs-observability.md](monitoring-vs-observability.md) | When explaining the difference or designing an observability strategy |
+| Anti-Patterns | [anti-patterns.md](anti-patterns.md) | When reviewing monitoring designs for common mistakes or doing architecture reviews |
+| Gotchas | [gotchas.md](gotchas.md) | When debugging unexpected monitoring behavior or planning migrations |
+| Best Practices | [best-practices.md](best-practices.md) | When designing monitoring strategy, setting up new environments, or reviewing existing setups |
+| Grafana Integration | [grafana-integration.md](grafana-integration.md) | When integrating Azure Managed Grafana, building Prometheus/Grafana dashboards, or multi-cloud visualization |
