@@ -27,3 +27,10 @@ Current coverage is strong across documentation types, writing mechanics, templa
 - **API documentation** — OpenAPI/Swagger generation, SDK doc patterns, versioning strategies
 - **Metrics** — measuring documentation effectiveness (page views, time-on-page, support ticket deflection)
 - **Migration playbooks** — moving docs between platforms (wiki → docs-as-code, Confluence → Docusaurus)
+
+## Related Skills
+
+| Skill | When to Load |
+|-------|-------------|
+| `documentation-standards` | README/runbook templates, Diátaxis framework, writing style rules |
+| `architecture-decision-records` | ADR template and process |

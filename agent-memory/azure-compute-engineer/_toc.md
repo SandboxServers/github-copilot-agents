@@ -19,3 +19,10 @@ Load only the files relevant to your current task. Do NOT load all files at once
 | Gotchas | [gotchas.md](gotchas.md) | When encountering surprising behavior — VM resize, VMSS modes, AKS limits, spot eviction, cold starts |
 | Best Practices | [best-practices.md](best-practices.md) | When designing production compute — right-sizing, availability zones, scaling, security, cost optimization |
 | GPU & AKS Networking | [gpu-and-aks-networking.md](gpu-and-aks-networking.md) | When working with GPU/N-series for AI/ML or choosing AKS networking model (CNI Overlay vs flat vs kubenet) |
+
+## Related Skills
+
+| Skill | When to Load |
+|-------|-------------|
+| `kubernetes-security-hardening` | AKS cluster, pod, network, and image security |
+| `cost-optimization-checklist` | VM/container right-sizing, start/stop schedules, commitment discounts |

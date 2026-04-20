@@ -18,3 +18,9 @@ Load only the files relevant to your current task. Do NOT load all files at once
 | Gotchas | [gotchas.md](gotchas.md) | When implementing features and need awareness of non-obvious behaviors or silent failures |
 | Best Practices | [best-practices.md](best-practices.md) | When designing new networks or validating existing designs against recommended practices |
 | Virtual WAN Patterns | [virtual-wan-patterns.md](virtual-wan-patterns.md) | When evaluating Virtual WAN vs traditional hub-spoke, routing intent, or large-scale topologies |
+
+## Related Skills
+
+| Skill | When to Load |
+|-------|-------------|
+| `network-security-design` | Private endpoints, NSGs, zero trust, WAF, common security findings |

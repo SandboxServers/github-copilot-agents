@@ -18,3 +18,9 @@ Load only the files relevant to your current task. Do NOT load all files at once
 | Gotchas | [gotchas.md](gotchas.md) | When advising on hidden costs, pricing surprises, or commitment discount pitfalls |
 | Best Practices | [best-practices.md](best-practices.md) | When recommending tagging, right-sizing, budgets, auto-scale, or cost review cadences |
 | Showback & Chargeback | [showback-chargeback.md](showback-chargeback.md) | When implementing cost visibility, internal billing, or cost allocation patterns |
+
+## Related Skills
+
+| Skill | When to Load |
+|-------|-------------|
+| `cost-optimization-checklist` | Waste elimination, right-sizing, commitment discounts, governance cadence |
