@@ -1,5 +1,5 @@
 ---
-name: "Pipeline Quality Gates Skill"
+name: pipeline-quality-gates
 description: >-
   Standard quality gates and best practices for CI/CD pipelines (Azure Pipelines
   and GitHub Actions). Enforces reproducibility, security, observability, and

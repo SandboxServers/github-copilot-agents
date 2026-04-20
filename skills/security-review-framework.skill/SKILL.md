@@ -1,5 +1,5 @@
 ---
-name: "Security Review Framework Skill"
+name: security-review-framework
 description: >-
   Threat modeling and security review checklist for applications, infrastructure,
   and processes. Identifies attack vectors, data flows, and compliance gaps

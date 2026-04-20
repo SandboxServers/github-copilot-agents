@@ -1,5 +1,5 @@
 ---
-name: "Observability Baseline Skill"
+name: observability-baseline
 description: >-
   Standard observability (logging, metrics, tracing, alerts) for applications and
   infrastructure. Ensures systems are monitorable and debuggable in production.

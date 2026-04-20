@@ -1,5 +1,5 @@
 ---
-name: "Architecture Decision Records Skill"
+name: architecture-decision-records
 description: >-
   Process and template for documenting architecture decisions. Captures the
   context, decision rationale, and consequences to build institutional knowledge

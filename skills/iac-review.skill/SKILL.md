@@ -1,5 +1,5 @@
 ---
-name: "IaC Review Skill"
+name: iac-review
 description: >-
   Comprehensive safety and best-practices checklist for Terraform, Bicep, and
   CloudFormation infrastructure code. Enforces security, cost optimization,
