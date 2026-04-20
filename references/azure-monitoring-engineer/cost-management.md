@@ -1,44 +1,66 @@
-# Cost Management
+# Monitoring Cost Management
+
+Monitoring costs can grow quickly if not managed. Understand the cost model and optimize proactively.
+
+## Log Analytics Pricing
+
+| Model | Rate | Best For |
+|-------|------|----------|
+| Pay-as-you-go | ~$2.76/GB ingestion | Low volume (<100 GB/day) |
+| Commitment tiers | 100-5000 GB/day | Predictable volume, up to 30% discount |
+| Retention (free) | First 31 days included | Default |
+| Retention (paid) | Per-GB beyond 31 days | Up to 730 days interactive |
+| Archive tier | Lower per-GB rate | Long-term up to 2,556 days (7 years), limited queries |
 
 ## Cost Drivers
-1. **Data ingestion**: biggest cost — GB/day into Log Analytics workspace
-2. **Data retention**: beyond default period (31 days, or 90 days with Sentinel/App Insights)
-3. **Log queries**: Basic/Auxiliary tables charge per query
-4. **Alerts**: per alert rule evaluation
-5. **Prometheus metrics**: per metrics ingested
-6. **Application Insights**: per GB telemetry + availability tests
 
-## Cost Optimization Strategies
-| Strategy | Impact |
-|---|---|
-| **Commitment tiers** | 100+ GB/day → tiered pricing discounts (15-25%+) |
-| **Basic log tables** | Lower ingestion cost for debug/troubleshooting data |
-| **Auxiliary tables** | Lowest cost for compliance/archival data |
-| **Data retention config** | Interactive (31-730 days) + long-term archive (up to 12 years) |
-| **Summary rules** | Aggregate high-volume data → query summaries instead of raw logs |
-| **Daily caps** | Hard stop on ingestion — risky (data loss) but effective budget control |
-| **Sampling** | Application Insights adaptive sampling — reduces volume, maintains statistical accuracy |
-| **Filter diagnostic settings** | Collect only needed categories — don't enable AllMetrics if already using Metrics Explorer |
-| **DCR transformations** | Filter/transform data before ingestion — drop unnecessary fields/records |
-| **Workspace Insights** | Monitor ingestion trends, identify anomalies, find top data sources |
+The biggest monitoring costs typically come from high-volume log ingestion:
 
-## Cost Monitoring KQL
-```kql
-// Data volume by table in last 30 days
-Usage
-| where TimeGenerated > ago(30d)
-| summarize GB = sum(Quantity) / 1000 by DataType
-| order by GB desc
+- **NSG flow logs**: Very high volume at full fidelity — can generate GB/hour per NSG
+- **AKS container logs**: stdout/stderr from noisy applications
+- **API Management diagnostic logs**: Full request/response body logging
+- **Application Insights**: High-traffic apps without sampling configured
+- **Custom metrics**: High-cardinality custom metrics with many dimensions
 
-// Daily ingestion trend
-Usage
-| where TimeGenerated > ago(30d)
-| summarize DailyGB = sum(Quantity) / 1000 by bin(TimeGenerated, 1d)
-| render timechart
-```
+## Cost Reduction Strategies
 
-## The Observability vs Spend Tradeoff
-- **Production**: full telemetry, longer retention, all diagnostic categories
-- **Staging**: reduced retention, fewer diagnostic categories, lower sampling rate
-- **Dev/Test**: minimal diagnostics, short retention, aggressive sampling
-- **Rule of thumb**: if you've never queried a log category in 6 months, stop collecting it
+1. **Basic logs tier**: Use for verbose, non-critical data
+   - Cheaper ingestion rate
+   - Limited query capability (single table, no joins)
+   - Good for: container stdout/stderr, verbose debug logs
+2. **Data collection rules (DCR)**: Filter and transform before ingestion
+   - Drop unnecessary fields or records at collection time
+   - Route different log levels to different tables/tiers
+3. **Application Insights sampling**: Reduce telemetry volume
+   - Adaptive sampling adjusts automatically based on volume
+   - Maintains statistical accuracy while reducing cost
+4. **Workspace data export**: Archive to storage for long-term retention
+   - Cheaper than Log Analytics retention for data older than 31 days
+5. **Exclude noisy log categories**: Don't collect what you never query
+   - Review ingestion by table — eliminate unused categories
+
+## Common Waste Patterns
+
+- NSG flow logs at full fidelity when traffic analytics summary would suffice
+- AKS stdout/stderr from apps that log every request at debug level
+- Verbose diagnostic logging left enabled in production after troubleshooting
+- Duplicate data sent to multiple workspaces without purpose
+- Application Insights with no sampling on high-traffic applications
+- AllMetrics enabled in diagnostic settings when Metrics Explorer is sufficient
+
+## Monitoring the Monitor
+
+- **Daily cap**: Set as a safety net on the workspace (not primary cost control — you lose data when hit)
+- **Azure Monitor cost analysis workbook**: Built-in template showing ingestion trends by table
+- **Ingestion anomaly alerts**: Alert when daily ingestion spikes unexpectedly
+- **Regular reviews**: Monthly review of ingestion by table — question any table over 10% of total
+
+## Environment Strategy
+
+| Environment | Diagnostic Level | Sampling | Retention |
+|-------------|-----------------|----------|-----------|
+| Production | Full categories | Adaptive (moderate) | 90+ days interactive |
+| Staging | Reduced categories | Higher sampling rate | 30 days |
+| Dev/Test | Minimal diagnostics | Aggressive sampling | 7-30 days |
+
+**Rule of thumb**: If you haven't queried a log category in 6 months, stop collecting it.
