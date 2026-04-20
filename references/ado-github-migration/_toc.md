@@ -1,11 +1,14 @@
 # ADO → GitHub Migration Specialist — Knowledge Index
 
-> **Last Updated:** 2025-07-18 — All chunks created with MCP-researched content.
+> **Last Updated:** 2026-04-19 — Added anti-patterns, gotchas, best-practices, gap analysis.
 
 Load only the files relevant to your current task. Do NOT load all files at once.
 
 | Topic | File | When to Load |
 |-------|------|-------------|
+| Anti-Patterns | [anti-patterns.md](anti-patterns.md) | When reviewing migration plans for common mistakes — big bang, 1:1 translation, skipping audits |
+| Gotchas | [gotchas.md](gotchas.md) | When hitting unexpected issues — parity gaps, history problems, feature differences |
+| Best Practices | [best-practices.md](best-practices.md) | When planning or executing a migration — waves, parallel ops, communication, validation |
 | Importer Advanced Usage | [importer-advanced.md](importer-advanced.md) | When using gh actions-importer beyond basics — custom transformers, audit reports, batch migration |
 | Service Connection → OIDC | [service-connection-to-oidc.md](service-connection-to-oidc.md) | When converting ADO service connections to GitHub OIDC federated credentials |
 | Template Migration Patterns | [template-migration-patterns.md](template-migration-patterns.md) | When migrating ADO templates to reusable workflows and composite actions |
