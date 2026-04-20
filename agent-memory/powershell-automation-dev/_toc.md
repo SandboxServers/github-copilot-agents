@@ -20,3 +20,11 @@ Load only the files relevant to your current task. Do NOT load all files at once
 | Performance Optimization | [performance-optimization.md](performance-optimization.md) | When optimizing collections, string building, hashtable lookups, file I/O, caching, or parallel processing |
 | Pester Testing | [pester-testing.md](pester-testing.md) | When writing Pester v5 tests — structure, assertions, mocking, data-driven tests, TestDrive, InModuleScope, CI/CD |
 | Module Development | [module-development.md](module-development.md) | When building PowerShell modules — structure, manifest, versioning, publishing, CI/CD pipeline |
+
+## Related Skills
+
+| Skill | When to Load |
+|-------|-------------|
+| `powershell-style-guide` | PowerShell naming, splatting, error handling rules, function template |
+| `naming-conventions` | Cross-language naming standards including PowerShell conventions |
+| `error-handling-patterns` | Retry with backoff, circuit breaker, PowerShell retry pattern |

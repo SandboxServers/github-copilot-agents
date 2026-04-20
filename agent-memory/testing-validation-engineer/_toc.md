@@ -31,3 +31,11 @@ Existing coverage is strong for core testing disciplines. Potential future addit
 | **Accessibility Testing** | Medium | axe-core, Lighthouse CI, WCAG compliance gates — growing regulatory requirement |
 | **Database Migration Testing** | Medium | Schema migration rollback verification, data integrity checks — not covered in current files |
 | **Disaster Recovery Testing** | Medium | DR drill automation, RTO/RPO validation — overlaps with chaos-engineering.md but deserves focused coverage |
+
+## Related Skills
+
+| Skill | When to Load |
+|-------|-------------|
+| `testing-strategy` | Test pyramid, quality gates, shift-left, anti-patterns |
+| `infrastructure-testing` | Terraform/Bicep testing, policy testing, smoke tests, canary |
+| `pipeline-quality-gates` | CI/CD quality gate configuration for Azure Pipelines and GitHub Actions |

@@ -217,13 +217,23 @@ and archive for 7 years.
 ```
 The lead identifies this spans compute, data, storage, and networking. It delegates to the relevant specialists, sequences their work (network first, then compute, then data), and synthesizes their responses.
 
-### Full organization engagement
+### Full organization engagement (multi-agent coordination)
 ```
 @cloud-engineering-org We're migrating a legacy .NET Framework monolith
 to Azure. 50 developers, SOC2 compliance required, $200K/month budget ceiling.
 Plan the engagement.
 ```
-The org agent activates the engagement lifecycle: scopes the work, assigns divisions, identifies the dependency chain (identity → network → compute → data → app migration), enforces security and cost gates, and produces a phased plan with milestones.
+The org agent:
+1. **Reads** the engagement-coordination-protocol skill (mandatory for all orchestrators)
+2. **Creates** engagement folder with SCOPE.md
+3. **Calls** each division lead with fresh context (file-based handoff, no history chains)
+4. **Logs** each call to AGENT-CALLS.json (audit trail)
+5. **Synthesizes** outputs into ARCHITECTURE-PLAN.md (the contract)
+6. **Enforces** mandatory gates (security veto, cost approval, documentation)
+7. **Produces** phased plan with milestones and dependencies
+8. **Waits** for user delivery, then calls Retrospective Agent to analyze spec vs actual
+
+Result: When user implements and delivers, org can analyze where/why implementation diverged from plan and extract lessons for next engagement.
 
 ### CI/CD migration
 ```
@@ -241,6 +251,46 @@ The migration specialist inventories ADO pipelines, delegates ADO analysis to `a
 
 Model is configured per-agent and is **not inherited** when one agent calls another. An Opus lead calling a Sonnet specialist does not upgrade the specialist to Opus — each agent uses its own model.
 
+## Reusable Skills
+
+Skills are cross-agent playbooks, checklists, and decision frameworks that multiple agents reference. Each skill is discoverable and self-contained.
+
+### Key Skill: Engagement Coordination Protocol
+
+The **engagement-coordination-protocol** skill defines how agents coordinate multi-agent engagements without context bloat:
+
+```
+engagement-[name]/
+├── SCOPE.md                      # User request, constraints, success criteria
+├── ARCHITECTURE-PLAN.md          # Final specification (contract with user)
+├── AGENT-CALLS.json              # Audit log: who was called, what they returned
+├── IMPLEMENTATION-TASKS.md       # What each team will build
+├── outputs/                      # Assessment/review outputs from agents
+├── code/                         # Implementation artifacts
+├── final-delivery/               # User-provided implementation
+└── RETROSPECTIVE.md              # Post-engagement analysis
+```
+
+This pattern enables:
+- **Fresh context per agent** — No nested conversation history bloat
+- **File-based handoffs** — Agents read files, write to specific paths, respond once
+- **Audit trail for learning** — AGENT-CALLS.json tracks decisions and rationale
+- **Retrospective analysis** — Compare planned vs actual, improve next engagement
+
+**See**: `skills/engagement-coordination-protocol.skill/SKILL.md` for complete handoff templates and practices.
+
+### Engagement Lifecycle with Retrospective
+
+1. **Scope** (Org) — Create engagement folder, populate SCOPE.md
+2. **Assess** (Division Leads) — Read SCOPE, write to outputs/, return path + summary
+3. **Plan** (Org) — Synthesize assessments into ARCHITECTURE-PLAN.md
+4. **Implement** (Code Authors) — Read ARCHITECTURE-PLAN, write to code/
+5. **Review** (Shared Services) — Read spec, review deliverables, sign off
+6. **Deliver** (User) — Implement solution, store in final-delivery/
+7. **Retrospective** (Retrospective Agent) — Compare planned vs actual, capture lessons
+
+The retrospective agent analyzes SCOPE, ARCHITECTURE-PLAN, AGENT-CALLS, and final-delivery to produce action items and organizational learning.
+
 ## File Structure
 
 ```
@@ -251,8 +301,12 @@ Model is configured per-agent and is **not inherited** when one agent calls anot
 │   │   ├── _toc.md               # Knowledge index with "when to load" guidance
 │   │   └── *.md                  # Topic-specific knowledge chunks
 │   └── ... (28 agent knowledge directories)
+├── skills/                       # Cross-agent reusable playbooks & checklists
+│   ├── engagement-coordination-protocol.skill/SKILL.md   # Multi-agent handoff protocol
+│   ├── pipeline-quality-gates.skill/SKILL.md
+│   ├── security-review-framework.skill/SKILL.md
+│   └── [17+ other skills]
 ├── prompts/                      # Original persona prompts that seeded agents
-├── skills/                       # (Planned) Cross-agent reusable playbooks
 └── README.md
 ```
 

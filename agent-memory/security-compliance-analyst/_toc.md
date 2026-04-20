@@ -21,3 +21,12 @@ Load only the files relevant to your current task. Do NOT load all files at once
 | Gotchas | [gotchas.md](gotchas.md) | When troubleshooting surprising behaviors — managed identity lifecycle, Key Vault soft delete, CA evaluation |
 | Best Practices | [best-practices.md](best-practices.md) | When recommending security controls — Zero Trust, managed identity, private endpoints, RBAC |
 | Security Operations Gaps | [security-operations-gaps.md](security-operations-gaps.md) | When running threat modeling sessions or mapping multi-framework compliance controls |
+
+## Related Skills
+
+| Skill | When to Load |
+|-------|-------------|
+| `security-review-framework` | Full security review checklist and threat modeling |
+| `secrets-management-audit` | Auth hierarchy, Key Vault config, rotation, detection |
+| `network-security-design` | Private endpoints, NSGs, zero trust networking |
+| `kubernetes-security-hardening` | AKS cluster, pod, network, and image security |

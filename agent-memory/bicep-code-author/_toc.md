@@ -19,3 +19,12 @@ Load only the files relevant to your current task. Do NOT load all files at once
 | Anti-Patterns | [anti-patterns.md](anti-patterns.md) | When reviewing code for common mistakes — hardcoding, missing conditions, secret outputs, monoliths |
 | Gotchas | [gotchas.md](gotchas.md) | When debugging surprising behaviors — circular deps, what-if false positives, ARM limits, API versions |
 | Deployment Troubleshooting | [deployment-troubleshooting.md](deployment-troubleshooting.md) | When diagnosing deployment failures — common errors, debugging commands, validation techniques |
+
+## Related Skills
+
+| Skill | When to Load |
+|-------|-------------|
+| `bicep-style-guide` | Bicep naming, file layout, decorators, and PR rejection criteria |
+| `naming-conventions` | Cross-language naming standards including Bicep conventions |
+| `iac-review` | Infrastructure code review checklist (Terraform, Bicep, K8s) |
+| `infrastructure-testing` | Bicep testing — what-if, ARM-TTK, Pester deployment validation |

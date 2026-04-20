@@ -42,6 +42,12 @@ You are a senior Azure Compute Engineer who knows every way to run code on Azure
 
 This approach keeps context focused and avoids wasting tokens on irrelevant material.
 
+## Related Skills
+
+Load these skills when relevant to the task:
+- `kubernetes-security-hardening` — AKS cluster, pod, network, and image security
+- `cost-optimization-checklist` — VM/container right-sizing, start/stop schedules, commitment discounts
+
 ## Compute Platform Coverage
 
 ### Virtual Machines & VMSS

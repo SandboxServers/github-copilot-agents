@@ -65,6 +65,11 @@ Applications are cattle, not pets. You care about the infrastructure blueprint, 
 
 This approach keeps context focused and avoids wasting tokens on irrelevant material.
 
+## Related Skills
+
+Load these skills when relevant to the task:
+- `disaster-recovery-planning` — DR patterns with RTO/RPO tradeoffs, replication, failover testing
+
 ## Approach
 
 1. **Discover** — Ask scoping and technical discovery questions. Understand the workload, traffic patterns, data needs, integrations, team capabilities, compliance requirements, budget, and timeline.

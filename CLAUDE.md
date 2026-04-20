@@ -11,7 +11,9 @@ A collection of **31 custom agents** organized as a virtual Microsoft Cloud Engi
 - **Defined relationships** — agents delegate to sub-agents, creating multi-agent workflows
 - **Model tiering** — Opus 4.6 for orchestrators and code authors; Sonnet 4.6 for domain SMEs
 
-**Key design principle**: Agents are built for both GitHub Copilot (VS Code) AND Claude Code, enabling drop-in install for either platform. The chunked knowledge system (agent-memories) ensures agents load only the context they need, avoiding token waste and staying compatible with memory-aware systems.
+**Key design principle**: Agents are built for both GitHub Copilot (VS Code) AND Claude Code, enabling drop-in install for either platform. The chunked knowledge system (agent-memories) ensures agents load only the context they need. The skill system (engagement-coordination-protocol, style guides, checklists) captures reusable patterns that scale across all agents and engagements.
+
+**Engagement coordination**: When agents are called by `cloud-engineering-org` or act as leads in multi-agent orchestrations, they use the `engagement-coordination-protocol` skill to structure handoffs, track decisions, and enable retrospective analysis. This prevents context bloat in nested delegations and creates an audit trail for learning.
 
 ## Repository Structure
 
@@ -33,8 +35,8 @@ github-copilot-agents/
 │   │   └── [other topic chunks...]
 │   ├── azure-compute-engineer/
 │   └── [27 more agent memory folders...]
-├── skills/                      # (Future) Reusable cross-agent playbooks
-│   └── [skill definitions]
+├── skills/                      # Reusable cross-agent playbooks and checklists
+│   └── {skill-name}.skill/SKILL.md
 ├── prompts/                     # System prompts and shared instruction templates
 └── .github/
     └── copilot-instructions.md  # VS Code Copilot workspace instructions
@@ -103,6 +105,7 @@ This approach keeps context focused and avoids wasting tokens on irrelevant mate
    - Use the structure above as a template
    - Be specific about what the agent does and doesn't do
    - List sub-agents if it's an orchestrator
+   - **If orchestrator**: Add "Skills You MUST Use" section referencing `engagement-coordination-protocol`
    - Include tool requirements
 
 2. **Create knowledge folder** — `agent-memory/new-agent-name/`
@@ -119,6 +122,7 @@ This approach keeps context focused and avoids wasting tokens on irrelevant mate
 
 5. **Link sub-agents** — If the agent is an orchestrator, add the sub-agents to:
    - The `agents:` array in YAML frontmatter
+   - Add to "Skills You MUST Use" section: `engagement-coordination-protocol` (mandatory)
    - The parent agent's delegation section (if relevant)
 
 ## How to Update Knowledge
@@ -197,20 +201,68 @@ Agents have access to:
 
 These are specified in the `tools:` array of each agent's YAML frontmatter.
 
-## Building Skills (Future)
+## Skills
 
-Skills are reusable playbooks, checklists, and decision trees used by multiple agents. Examples:
+Skills are reusable playbooks, checklists, and decision trees used by multiple agents. Each skill lives in `skills/{skill-name}.skill/SKILL.md` with YAML frontmatter (`name`, `description`, `when-to-use`, `categories`).
 
-- **IaC Review Checklist** — Used by Terraform Author, Bicep Author, Security Analyst, Testing Engineer
-- **Architecture Decision Records** — Used by architects and leads when capturing design decisions
-- **Pipeline Quality Gates** — Used by CI/CD architects and DevOps lead to standardize pipeline expectations
-- **Migration Playbook** — Used by migration specialist and CI/CD architects for ADO→GitHub migrations
+### Current Skills (21)
 
-Skills live in `skills/` and are referenced in agents' knowledge sections or prompts.
+| Skill | Description | Type |
+|---|---|---|
+| **engagement-coordination-protocol** | **Multi-agent handoff structure, AGENT-CALLS.json audit log, three handoff templates, retrospective integration** | **Mandatory for orchestrators** |
+| `pipeline-quality-gates` | Azure Pipelines and GitHub Actions quality gate configuration | Shared infrastructure |
+| `security-review-framework` | Threat modeling and security review checklist | Shared gate |
+| `iac-review` | Infrastructure code review checklist (Terraform, Bicep, K8s, CloudFormation) | Code review |
+| `architecture-decision-records` | ADR template and process | Documentation |
+| `observability-baseline` | Logging, metrics, tracing, and alerting standards | Architecture |
+| `terraform-style-guide` | Terraform naming, formatting, file organization, PR checklist | Code style |
+| `bicep-style-guide` | Bicep naming, file layout, decorators, PR rejection criteria | Code style |
+| `powershell-style-guide` | PowerShell naming, splatting, error handling, function template | Code style |
+| `testing-strategy` | Test pyramid, quality gates, shift-left, anti-patterns | Quality |
+| `api-design-standards` | Contract-first workflow, REST conventions, versioning, error responses | Architecture |
+| `error-handling-patterns` | Retry, circuit breaker, saga, dead-letter, idempotency | Architecture |
+| `naming-conventions` | Azure resources, Terraform, Bicep, PowerShell naming standards | Standards |
+| `documentation-standards` | README/runbook templates, Diátaxis framework, writing style | Documentation |
+| `infrastructure-testing` | Terraform/Bicep testing pyramid, CI pipeline integration | Quality |
+| `cost-optimization-checklist` | Waste elimination, right-sizing, commitment discounts | Review gate |
+| `disaster-recovery-planning` | DR patterns with RTO/RPO tradeoffs, failover testing | Architecture |
+| `network-security-design` | Private endpoints, NSGs, zero trust, WAF, common findings | Security |
+| `secrets-management-audit` | Auth hierarchy, Key Vault config, rotation, detection | Security |
+| `database-migration-checklist` | SQL/PostgreSQL/MySQL/Cosmos migration workflows | Migration |
+| `kubernetes-security-hardening` | AKS cluster, pod, network, and image security | Security |
+
+Skills are referenced in agents' `## Related Skills` sections and in `agent-memory/_toc.md` files.
 
 **When to create a skill**: The pattern is used by 3+ agents OR saves significant duplication across the codebase.
 
 **When NOT to create a skill**: The knowledge is domain-specific to one agent (that's what agent-memories are for).
+
+## Multi-Agent Engagement Coordination
+
+### The engagement-coordination-protocol Skill (MANDATORY for Orchestrators)
+
+When the `cloud-engineering-org` or division leads orchestrate multi-agent engagements:
+
+1. **Create engagement folder** with structure defined in skill
+2. **File-based handoffs** — Each agent call gets fresh context via specific files (SCOPE.md, prior outputs)
+3. **AGENT-CALLS.json audit log** — Track what each agent was asked, what they returned, what made it into the plan
+4. **ARCHITECTURE-PLAN.md specification** — Synthesized after all assessments, becomes the contract with user
+5. **Retrospective integration** — When user delivers implementation, Retrospective Agent analyzes spec vs actual
+
+### Why This Pattern
+
+- **No context bloat** — Each agent operates in fresh context, no nested conversation history chains
+- **Audit trail** — AGENT-CALLS.json enables retrospective analysis and organizational learning
+- **Specification clarity** — ARCHITECTURE-PLAN.md is the contract; final delivery measured against it
+- **Scaling** — Works for small 2-agent handoffs or large org-wide engagements
+
+### Reference
+
+See `skills/engagement-coordination-protocol.skill/SKILL.md` for:
+- Complete engagement folder structure
+- AGENT-CALLS.json schema with all fields
+- Three reusable handoff templates (Division Assessment, Specialist Implementation, Review & Approval)
+- Key practices for orchestrators and responding agents
 
 ## File Naming Conventions
 
@@ -256,7 +308,8 @@ For Claude Code:
 3. Test that handoffs and sub-agents still make sense
 
 ### Create a cross-cutting skill
-1. Create `skills/skill-name.skill.md` with standard structure
+1. Create `skills/{skill-name}.skill/SKILL.md` with YAML frontmatter (`name`, `description`, `when-to-use`, `categories`)
 2. Document which agents should use it and when
-3. Reference from relevant agents' knowledge sections
-4. Link in README under "Shared Skills"
+3. Add to `## Related Skills` in relevant agent `.agent.md` files
+4. Add to `## Related Skills` in relevant `agent-memory/_toc.md` files
+5. Update the skills table in this file

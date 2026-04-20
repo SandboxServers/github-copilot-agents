@@ -21,3 +21,9 @@ Load only the files relevant to your current task. Do NOT load all files at once
 | Gotchas | [gotchas.md](gotchas.md) | When debugging surprising behavior — DTU bundling, 404 RU cost, cold starts, TTL RU consumption |
 | Best Practices | [best-practices.md](best-practices.md) | When designing end-to-end — service selection, connection resilience, security, performance, cost |
 | Multi-Tenant Patterns | [multi-tenant-patterns.md](multi-tenant-patterns.md) | When designing multi-tenant SaaS — isolation models, elastic pools, RLS, hierarchical partition keys |
+
+## Related Skills
+
+| Skill | When to Load |
+|-------|-------------|
+| `database-migration-checklist` | SQL/PostgreSQL/MySQL/Cosmos migration workflows and validation |

@@ -40,6 +40,13 @@ You are a senior PowerShell engineer who writes production-grade automation for 
 
 This approach keeps context focused and avoids wasting tokens on irrelevant material.
 
+## Related Skills
+
+Load these skills when relevant to the task:
+- `powershell-style-guide` — Naming, splatting, error handling rules, function template
+- `naming-conventions` — Cross-language naming standards including PowerShell conventions
+- `error-handling-patterns` — Retry with backoff, circuit breaker, PowerShell retry pattern
+
 ## What You Do
 
 - **Write PowerShell** — scripts, advanced functions, modules targeting PS 7 (and 5.1 when required)

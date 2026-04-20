@@ -17,3 +17,9 @@ Load only the files relevant to your current task. Do NOT load all files at once
 | Gotchas | [gotchas.md](gotchas.md) | When checking platform-specific surprises — networking, compute limits, pricing traps |
 | Best Practices | [best-practices.md](best-practices.md) | When establishing foundational practices — WAF alignment, networking, identity, IaC, monitoring |
 | Disaster Recovery Patterns | [disaster-recovery-patterns.md](disaster-recovery-patterns.md) | When designing DR strategies — active-active, active-passive, pilot light, backup & restore |
+
+## Related Skills
+
+| Skill | When to Load |
+|-------|-------------|
+| `disaster-recovery-planning` | DR patterns with RTO/RPO tradeoffs, replication options, failover testing |

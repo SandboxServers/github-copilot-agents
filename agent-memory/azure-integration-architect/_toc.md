@@ -18,3 +18,10 @@ Load only the files relevant to your current task. Do NOT load all files at once
 | Gotchas | [gotchas.md](gotchas.md) | When debugging surprising behaviors or hitting hidden limits in integration services |
 | Best Practices | [best-practices.md](best-practices.md) | When designing integration solutions — idempotency, sagas, retries, monitoring |
 | API-First Design | [api-first-design.md](api-first-design.md) | When designing APIs contract-first, setting up API governance, or using APIM as design platform |
+
+## Related Skills
+
+| Skill | When to Load |
+|-------|-------------|
+| `api-design-standards` | Contract-first workflow, REST conventions, versioning, pagination, error responses |
+| `error-handling-patterns` | Retry, circuit breaker, saga, dead-letter, idempotency patterns |
