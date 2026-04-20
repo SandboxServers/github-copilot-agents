@@ -2,6 +2,14 @@
 
 This folder contains the structured knowledge base that powers each agent in the organization. Every agent with domain-specific expertise has a corresponding subdirectory here containing chunked reference material that the agent loads on demand during conversations.
 
+## Skills vs. Agent Memory
+
+**Agent Memory** (`/agent-memory`): Domain-specific reference material. When to load: specific questions, design decisions, troubleshooting. Example: "how do I set up read replicas?" loads `azure-database-specialist/replication-dr.md`.
+
+**Skills** (`/skills`): Cross-agent reusable playbooks and checklists. When to use: methodology that multiple agents follow. Example: All agents involved in a coordinated engagement read the `engagement-coordination-protocol` skill to understand handoff structure, file paths, and responses.
+
+**Organizational Learning** is stored in skills — multi-agent patterns that improve every engagement. **Domain Depth** is stored in agent-memory — specialized knowledge that powers individual agents.
+
 ## Why This Structure
 
 VS Code Copilot agents operate within a context window. Loading an entire knowledge base into every conversation would waste context on irrelevant material and crowd out the actual work. Instead, each agent's knowledge is split into focused topic files that can be loaded selectively based on what the user is actually asking about.
@@ -456,6 +464,15 @@ Content includes decision frameworks, comparison tables, configuration guidance,
 - **28** agent knowledge directories
 - **28** `_toc.md` index files
 - **231** topic chunk files
-- **259** total files
+- **259** agent-memory files
+- **20+** cross-agent skills (in `/skills` folder)
 
-> **Last Updated:** 2026-04-19 — Knowledge refined with anti-patterns, gotchas, best-practices, AVM stance update, and gap analysis across all 31 reference directories.
+### Engagement Coordination Skill
+
+The `engagement-coordination-protocol` skill is shared infrastructure for all multi-agent engagements:
+- Defines engagement folder structure (SCOPE.md, ARCHITECTURE-PLAN.md, AGENT-CALLS.json)
+- Provides three reusable handoff templates (Division Assessment, Specialist Implementation, Review & Approval)
+- Enables file-based coordination to prevent context bloat
+- Supports retrospective analysis via audit trails
+
+> **Last Updated:** 2026-04-20 — Added engagement-coordination-protocol skill for multi-agent engagement support. Agent-memory refined with anti-patterns, gotchas, best-practices, AVM stance update, and gap analysis across all 31 reference directories.
