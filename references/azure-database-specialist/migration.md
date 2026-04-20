@@ -2,92 +2,97 @@
 
 ## Azure Database Migration Service (DMS)
 
-### Supported Scenarios (Verified via MS Learn)
+### Supported Scenarios
 
 #### Offline Migration (GA)
-| Source | Target | Status |
-|---|---|---|
-| SQL Server | Azure SQL Database | GA |
-| SQL Server | Azure SQL Managed Instance | GA |
-| SQL Server | SQL Server on Azure VM | GA |
-| Amazon RDS SQL Server | Azure SQL DB / MI / VM | GA |
-| Oracle | Azure SQL (via SSMA) | Preview |
-| MySQL / RDS MySQL / Aurora MySQL / Cloud SQL MySQL / Percona | Azure Database for MySQL Flexible | GA |
-| MongoDB | Azure Cosmos DB | GA |
-| Azure Database for MySQL | Azure Database for MySQL Flexible | GA |
+
+| Source | Target |
+|---|---|
+| SQL Server | Azure SQL Database / MI / VM |
+| Amazon RDS SQL Server | Azure SQL DB / MI / VM |
+| MySQL / RDS MySQL / Aurora MySQL / Cloud SQL MySQL | MySQL Flexible Server |
+| MongoDB | Cosmos DB |
+| PostgreSQL / RDS PostgreSQL | PostgreSQL Flexible Server |
 
 #### Online Migration (Minimal Downtime — GA)
-| Source | Target | Status |
-|---|---|---|
-| SQL Server | Azure SQL Managed Instance | GA |
-| SQL Server | SQL Server on Azure VM | GA |
-| Amazon RDS SQL Server | Azure SQL MI / VM | GA |
-| MySQL / RDS MySQL / Aurora MySQL / Cloud SQL MySQL / Percona | Azure Database for MySQL Flexible | GA |
-| MongoDB | Azure Cosmos DB | GA |
-| PostgreSQL / RDS PostgreSQL | Azure Database for PostgreSQL Flexible | GA |
-| Azure Database for MySQL | Azure Database for MySQL Flexible | GA |
 
-**Notable gap**: Online migration to Azure SQL Database is NOT supported — only offline. Online is supported for Managed Instance and Azure VM targets.
+| Source | Target |
+|---|---|
+| SQL Server | Azure SQL MI / VM (NOT SQL Database) |
+| Amazon RDS SQL Server | Azure SQL MI / VM |
+| MySQL / RDS MySQL / Aurora MySQL / Cloud SQL MySQL | MySQL Flexible Server |
+| MongoDB | Cosmos DB |
+| PostgreSQL / RDS PostgreSQL | PostgreSQL Flexible Server |
 
-### Offline vs Online Decision (Verified via MS Learn)
+Notable gap: online migration to Azure SQL Database is NOT supported — only offline. Online is supported for MI and VM targets.
+
+### Offline vs Online Decision
+
 | Factor | Offline | Online |
 |---|---|---|
-| Downtime | Full downtime during migration | Minimal downtime at cutover only |
+| Downtime | Full during migration | Minimal at cutover only |
 | Complexity | Simple, fewer failure modes | More complex, replication involved |
-| Restrictions | None significant | PostgreSQL online requires primary keys on all tables |
-| Success rate | Higher (simpler process) | More failure modes due to replication complexity |
-| Best for | Planned maintenance windows, smaller DBs | Large databases, business continuity critical |
+| Restrictions | None significant | PostgreSQL requires primary keys on all tables |
+| Best for | Planned maintenance windows | Large databases, business continuity critical |
 
 ## SQL Server to Azure SQL Migration
 
-### Migration Workflow
-1. **Assessment**: Azure Migrate or Data Migration Assistant (DMA) — compatibility check, feature parity analysis
-2. **SKU recommendation**: right-size the target based on current workload metrics (CPU, IO, memory baselines)
-3. **Schema migration**: DMA or SSDT for schema comparison and migration
-4. **Data migration**: DMS (online or offline), BACPAC export/import, or transactional replication
-5. **Cutover**: switch connection strings, verify data integrity, decommission source
-6. **Post-migration**: enable HA, monitoring, backup policies; validate performance baselines
+### Workflow
+1. Assessment: Azure Migrate or Data Migration Assistant — compatibility check, feature parity
+2. SKU recommendation: right-size target based on current workload metrics
+3. Schema migration: DMA or SSDT for schema comparison and migration
+4. Data migration: DMS (online or offline), BACPAC export/import, or transactional replication
+5. Cutover: switch connection strings, verify data integrity, decommission source
+6. Post-migration: enable HA, monitoring, backup policies; validate performance
 
-### Migration Methods Comparison
-| Method | Downtime | Complexity | Best For |
-|---|---|---|---|
-| DMS offline | Full | Low | Simple migrations, small databases |
-| DMS online (MI/VM only) | Minimal | Medium | Large databases needing minimal downtime |
-| BACPAC export/import | Full | Low | Small databases, schema + data together |
-| Transactional replication | Minimal | High | Complex scenarios, selective table migration |
+### Method Comparison
 
-## PostgreSQL Migration (Verified via MS Learn)
+| Method | Downtime | Best For |
+|---|---|---|
+| DMS offline | Full | Simple migrations, small databases |
+| DMS online (MI/VM only) | Minimal | Large databases needing minimal downtime |
+| BACPAC export/import | Full | Small databases, schema + data together |
+| Transactional replication | Minimal | Complex scenarios, selective table migration |
+
+## PostgreSQL Migration
 
 ### Built-in Migration Service
-- Integrated directly in Azure Database for PostgreSQL Flexible Server (Azure portal + CLI)
-- Supports sources: on-prem PostgreSQL, Amazon RDS, Google Cloud SQL, Azure Single Server, other Flexible Servers
+- Integrated directly in PostgreSQL Flexible Server (portal + CLI)
+- Sources: on-prem PostgreSQL, Amazon RDS, Google Cloud SQL, Azure Single Server
 - Online and offline modes available
 
-### Migration Workflow
-1. Enable supported extensions on target (allowlist + `CREATE EXTENSION`)
-2. Check `shared_preload_libraries` — some extensions require preload (restart needed)
-3. Match server parameters manually between source and target
-4. Migrate users and roles manually via `pg_dumpall --globals-only`
-5. Remove superuser privileges (not supported in Flexible Server)
-6. Disable HA and read replicas on target before migration
-7. Run migration (online or offline)
-8. Validate, then enable HA and replicas post-migration
+### Workflow
+1. Enable supported extensions on target (allowlist + CREATE EXTENSION)
+2. Match server parameters between source and target
+3. Migrate users and roles manually via pg_dumpall --globals-only
+4. Remove superuser privileges (not supported in Flexible Server)
+5. Disable HA and read replicas on target before migration
+6. Run migration (online or offline)
+7. Validate, then enable HA and replicas post-migration
 
 ### Key Constraints
-- **Online mode requires primary keys** on all tables being migrated (for replication tracking)
-- Superuser roles must be removed/adjusted before migration
+- Online mode requires primary keys on all tables for replication tracking
+- Superuser roles must be removed or adjusted before migration
 - Extensions must be allowlisted and created on target before migration starts
-- Some extensions need `shared_preload_libraries` configuration (requires restart)
 
 ## MySQL Migration
-- DMS supports: MySQL, Amazon RDS MySQL, Aurora MySQL, Google Cloud SQL MySQL, Percona MySQL
+- DMS supports: MySQL, Amazon RDS MySQL, Aurora MySQL, Cloud SQL MySQL, Percona
 - Both online and offline modes — all GA
-- Schema migration supported via DMS
-- Data-in replication available for hybrid scenarios with MyDumper/MyLoader
+- Data-in replication available for hybrid scenarios
 
 ## Cosmos DB Migration
-- DMS for MongoDB → Cosmos DB (MongoDB API) — online and offline, both GA
-- Data migration tool for JSON → Cosmos DB NoSQL
+- DMS for MongoDB to Cosmos DB (MongoDB API) — online and offline, both GA
+- Data migration tool for JSON to Cosmos DB NoSQL
 - Spark connector for bulk migration from any Spark-compatible source
-- **Critical**: design partition key strategy BEFORE migrating — partition key cannot be changed after container creation
-- For MongoDB vCore: standard MongoDB tools (mongodump/mongorestore, mongoimport) work directly
+- Design partition key strategy BEFORE migrating — cannot change after container creation
+
+## Migration Checklist
+1. Assess compatibility and fix blockers
+2. Right-size target SKU from workload metrics
+3. Test migration in dev environment first
+4. Migrate with DMS (online or offline)
+5. Validate data integrity and row counts
+6. Run performance tests against target
+7. Cutover with connection string switch
+8. Enable HA, monitoring, and backup policies
+9. Monitor for 2-4 weeks post-migration
