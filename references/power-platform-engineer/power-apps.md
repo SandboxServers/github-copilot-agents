@@ -1,46 +1,72 @@
 ## Power Apps
 
-### Canvas Apps vs Model-Driven Apps
+### Canvas Apps
+- Pixel-level UI control with drag-and-drop WYSIWYG designer
+- Connect to 400+ data sources (SharePoint, SQL, Dataverse, REST APIs, Excel)
+- Power Fx formula language for logic, navigation, and data manipulation
+- Best for task-specific apps with custom UI requirements
+- Responsive design must be manually implemented with containers
+- Ideal when integrating multiple non-Dataverse data sources
+- Full creative control — every pixel, every layout decision is yours
 
-| Aspect | Canvas Apps | Model-Driven Apps |
+### Model-Driven Apps
+- Built on Dataverse — data model drives the UI automatically
+- Form-driven: main forms, quick-create forms, quick-view forms
+- Consistent, accessible UX with built-in navigation and sitemap
+- Automatic relationship handling from Dataverse schema
+- Best for data-heavy business apps (CRM-style CRUD operations)
+- Rapid development once the data model exists
+- Views, charts, and dashboards configured declaratively
+
+### Canvas vs Model-Driven Decision
+
+| Aspect | Canvas | Model-Driven |
 |---|---|---|
-| **Data platform** | Dataverse + 400+ connectors | Dataverse only |
-| **UI control** | Full control (pixel-perfect) | Limited — component-focused customization |
-| **Design approach** | WYSIWYG, Power Fx expressions | No-code, driven by data model + components |
-| **Responsive** | Only if designed that way | Automatically responsive |
-| **Speed to build** | Depends on design complexity | Rapid once data model exists |
-| **Navigation** | Custom, designed per app | Built-in, consistent across all MDA |
-| **Accessibility** | Must be designed in | Built-in |
-| **Migration between environments** | Potentially complex (datasource updates) | Simple via solutions |
-| **Consistency** | Low — every maker builds differently | High — uniform UX across all apps |
-| **Relationships** | Must be coded with Power Fx | Automatic if Dataverse relationships exist |
+| **UI control** | Pixel-perfect, fully custom | Component-driven, consistent |
+| **Data sources** | Any connector (400+) | Dataverse only |
+| **Design approach** | WYSIWYG + Power Fx | Driven by data model |
+| **Responsive** | Manual effort | Automatic |
+| **Relationship nav** | Must be coded | Built-in |
+| **Best for** | Task-specific, mobile, custom UX | Forms-over-data, business process |
 
-### When to Use Which
-
-**Canvas apps** when:
-- You need pixel-perfect custom layouts
-- You're integrating data from multiple non-Dataverse sources
-- You need a very specific mobile experience
-- The UX requirements are unique to this scenario
-
-**Model-driven apps** when:
-- Data lives in Dataverse (or should)
-- You need forms-over-data CRUD applications
-- Speed of delivery matters more than pixel-perfect design
-- You want consistent, accessible UX out of the box
-- You need built-in relationship navigation
-
-**Custom pages** (hybrid):
+### Custom Pages
 - Canvas app capabilities embedded inside model-driven apps
-- Best of both worlds — standard MDA navigation + custom canvas screens
-- Limit to ~25 custom pages per app (performance impact beyond that)
-- Use instead of embedded canvas apps for better integration and performance
+- Standard MDA navigation + custom canvas screens in one app
+- Better integration and performance than legacy embedded canvas apps
+- Limit to ~25 custom pages per app (performance degrades beyond)
+- Use for screens needing custom layout within a model-driven shell
 
-### Maintainability Rules
-1. **Name everything** — controls, variables, collections get meaningful names, not Button1, Label37
-2. **Use components** for reusable UI patterns
-3. **Limit screens per app** — decompose into multiple apps if >15 screens
-4. **Avoid global variables** — use context variables and collections appropriately
-5. **Use App.OnStart sparingly** — move initialization logic to named formulas
-6. **Don't hardcode** — use environment variables for connection strings, URLs, feature flags
-7. **Follow naming conventions** — scrXxx for screens, btnXxx for buttons, varXxx for variables, colXxx for collections
+### Component Libraries
+- Reusable UI components shared across multiple canvas apps
+- Build once, update centrally — changes propagate to consuming apps
+- Custom properties (input/output) for configurable behavior
+- Store in solutions for proper ALM and environment promotion
+- Use for headers, navigation menus, common form patterns, branded controls
+
+### App Performance
+
+**Delegation**
+- Push query processing to the data source instead of loading all data to client
+- Non-delegable functions pull max 500/2000 records then filter locally — silent data loss
+- Always check delegation warnings (yellow triangles in formula bar)
+- Key delegable functions: Filter, Sort, LookUp (varies by data source)
+- Restructure formulas to be delegable — avoid `Search()` on large datasets
+
+**Concurrent() Function**
+- Execute multiple data calls simultaneously instead of sequentially
+- Use in App.OnStart or screen OnVisible for parallel data loading
+- Dramatically reduces app load time when fetching from multiple sources
+- Syntax: `Concurrent(ClearCollect(col1, src1), ClearCollect(col2, src2))`
+
+**Caching Strategies**
+- Use collections to cache reference data that rarely changes
+- Load once with `ClearCollect()`, work from local collection afterward
+- Implement manual refresh button for user-controlled cache invalidation
+- Balance freshness vs performance — don't cache transactional data
+
+### Naming Conventions
+- Screens: `scrHome`, `scrDetail`, `scrSettings`
+- Buttons: `btnSubmit`, `btnCancel`, `btnNavigate`
+- Variables: `varUserName`, `varSelectedRecord`
+- Collections: `colEmployees`, `colLookupData`
+- Name everything — never leave Button1, Label37, Gallery3
