@@ -205,11 +205,13 @@ These are specified in the `tools:` array of each agent's YAML frontmatter.
 
 Skills are reusable playbooks, checklists, and decision trees used by multiple agents. Each skill lives in `skills/{skill-name}.skill/SKILL.md` with YAML frontmatter (`name`, `description`, `when-to-use`, `categories`).
 
-### Current Skills (21)
+### Current Skills (23)
 
 | Skill | Description | Type |
 |---|---|---|
 | **engagement-coordination-protocol** | **Multi-agent handoff structure, AGENT-CALLS.json audit log, three handoff templates, retrospective integration** | **Mandatory for orchestrators** |
+| **agent-voice-guide** | **Define personality, communication style, decision-making bias for each agent; prevent homogenization** | **Agent design** |
+| **agent-consistency-audit** | **Identify and resolve conflicts when multiple agents provide guidance on overlapping domains** | **Quality assurance** |
 | `pipeline-quality-gates` | Azure Pipelines and GitHub Actions quality gate configuration | Shared infrastructure |
 | `security-review-framework` | Threat modeling and security review checklist | Shared gate |
 | `iac-review` | Infrastructure code review checklist (Terraform, Bicep, K8s, CloudFormation) | Code review |
