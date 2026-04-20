@@ -1,6 +1,6 @@
 # Platform Engineering Lead — Knowledge Index
 
-> **Last Updated:** 2025-07-18 — All chunks replaced with MCP-researched content.
+> **Last Updated:** 2026-04-19 — Added anti-patterns, gotchas, best-practices, gap analysis.
 
 Load only the files relevant to your current task. Do NOT load all files at once.
 
@@ -15,3 +15,6 @@ Load only the files relevant to your current task. Do NOT load all files at once
 | Adoption Metrics | [adoption-metrics.md](adoption-metrics.md) | When measuring platform success — adoption rate, time to deploy, satisfaction |
 | Governance Integration | [governance-integration.md](governance-integration.md) | When integrating policy-as-code and guardrails into the platform |
 | Platform Anti-Patterns | [platform-anti-patterns.md](platform-anti-patterns.md) | When identifying and avoiding platform engineering failure modes |
+| Anti-Patterns (Broad) | [anti-patterns.md](anti-patterns.md) | When reviewing organizational, strategic, and execution anti-patterns across platform initiatives |
+| Gotchas | [gotchas.md](gotchas.md) | When navigating non-obvious traps in platform engineering execution |
+| Best Practices | [best-practices.md](best-practices.md) | When applying proven patterns for platform-as-product, golden paths, self-service, and measurement |
