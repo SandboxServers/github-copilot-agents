@@ -1,6 +1,6 @@
 # Azure Database Specialist — Knowledge Index
 
-> **Last Updated:** 2025-07-18 — All chunks replaced with MCP-researched content.
+> **Last Updated:** 2026-04-19 — Added anti-patterns, gotchas, best-practices, gap analysis.
 
 Load only the files relevant to your current task. Do NOT load all files at once.
 
@@ -17,3 +17,7 @@ Load only the files relevant to your current task. Do NOT load all files at once
 | Performance Tuning | [performance.md](performance.md) | When diagnosing or optimizing database performance — indexing, query tuning, wait stats |
 | Migration | [migration.md](migration.md) | When planning database migration — DMS, offline vs online, assessment, cutover |
 | Cost Optimization | [cost-optimization.md](cost-optimization.md) | When optimizing database costs — right-sizing, reservations, hybrid benefit, Cosmos DB traps |
+| Anti-Patterns | [anti-patterns.md](anti-patterns.md) | When reviewing designs for common database mistakes — bad partition keys, missing pooling, no retries |
+| Gotchas | [gotchas.md](gotchas.md) | When debugging surprising behavior — DTU bundling, 404 RU cost, cold starts, TTL RU consumption |
+| Best Practices | [best-practices.md](best-practices.md) | When designing end-to-end — service selection, connection resilience, security, performance, cost |
+| Multi-Tenant Patterns | [multi-tenant-patterns.md](multi-tenant-patterns.md) | When designing multi-tenant SaaS — isolation models, elastic pools, RLS, hierarchical partition keys |
