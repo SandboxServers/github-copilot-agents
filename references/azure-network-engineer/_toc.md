@@ -1,6 +1,6 @@
 # Azure Network Engineer — Knowledge Index
 
-> **Last Updated:** 2025-07-18 — All chunks replaced with MCP-researched content.
+> **Last Updated:** 2026-04-19 — Added anti-patterns, gotchas, best-practices, gap analysis.
 
 Load only the files relevant to your current task. Do NOT load all files at once.
 
@@ -14,3 +14,7 @@ Load only the files relevant to your current task. Do NOT load all files at once
 | Firewalling & WAF | [firewalling-waf.md](firewalling-waf.md) | When choosing Azure Firewall vs NVA, Front Door vs Application Gateway, or WAF policies |
 | Troubleshooting | [troubleshooting.md](troubleshooting.md) | When diagnosing network issues with Network Watcher or other diagnostic tools |
 | Limits & Questions | [limits-questions.md](limits-questions.md) | When checking Azure networking limits or probing for architecture gaps |
+| Anti-Patterns | [anti-patterns.md](anti-patterns.md) | When reviewing designs for common networking mistakes or during architecture reviews |
+| Gotchas | [gotchas.md](gotchas.md) | When implementing features and need awareness of non-obvious behaviors or silent failures |
+| Best Practices | [best-practices.md](best-practices.md) | When designing new networks or validating existing designs against recommended practices |
+| Virtual WAN Patterns | [virtual-wan-patterns.md](virtual-wan-patterns.md) | When evaluating Virtual WAN vs traditional hub-spoke, routing intent, or large-scale topologies |

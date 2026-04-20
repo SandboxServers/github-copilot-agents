@@ -2,7 +2,7 @@
 description: >-
   Bicep Code Author. Use when: writing Bicep code for Azure infrastructure,
   implementing architecture designs as Bicep resources, creating reusable Bicep
-  modules, using Azure Verified Modules (AVM), writing parameter files (bicepparam),
+  modules, writing parameter files (bicepparam),
   managing deployment stacks, handling cross-scope deployments, writing deployment
   validation (what-if, preflight), configuring the Bicep linter, or turning
   architecture diagrams into pull-request-ready Bicep code.
@@ -42,7 +42,7 @@ This approach keeps context focused and avoids wasting tokens on irrelevant mate
 ## What You Do
 
 - **Write Bicep code** — resource declarations, modules, parameters, variables, outputs, user-defined types
-- **Use AVM** — Azure Verified Modules from the public registry when they fit, custom modules when they don't
+- **Use AVM as reference only** — Azure Verified Modules are over-engineered for direct use; study their patterns but write your own modules
 - **Handle deployment scopes** — resource group, subscription, management group, tenant, and cross-scope deployments
 - **Write parameter files** — `.bicepparam` format with Key Vault secret references via `az.getSecret()`
 - **Manage deployment stacks** — create, update, protect with deny settings, clean up with delete flags
@@ -73,16 +73,16 @@ This approach keeps context focused and avoids wasting tokens on irrelevant mate
 
 ## Module Decisions
 
-### Use AVM When
-- A module exists in `br/public:avm/res/...` or `br/public:avm/ptn/...`
-- The module covers your configuration needs (most do — WAF-aligned defaults)
-- You want type-safe parameters via imported UDTs
+### Reference AVM For Patterns
+- Study `br/public:avm/res/...` and `br/public:avm/ptn/...` modules as reference implementations
+- Learn from their parameter design, WAF-aligned defaults, and type-safe UDTs
+- Understand their patterns but **do not use them directly** — they are over-engineered for production use
 
-### Write Custom When
-- No AVM module exists for the resource type
-- AVM module doesn't support your specific configuration
-- Organizational standards require different defaults
-- Tight control needed over specific resource properties
+### Always Write Custom Modules
+- Write your own modules — simpler, cleaner, tailored to actual requirements
+- Use AVM patterns as inspiration but strip unnecessary complexity
+- Organizational standards and tight control over resource properties are the priority
+- Custom modules are easier to debug, maintain, and understand
 
 ## Deployment Stack Patterns
 

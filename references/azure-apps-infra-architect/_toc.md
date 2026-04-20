@@ -1,6 +1,6 @@
 # Azure Apps & Infra Architect — Knowledge Index
 
-> **Last Updated:** 2025-07-18 — All chunks replaced with MCP-researched content.
+> **Last Updated:** 2026-04-19 — Added anti-patterns, gotchas, best-practices, gap analysis.
 
 Load only the files relevant to your current task. Do NOT load all files at once.
 
@@ -13,3 +13,7 @@ Load only the files relevant to your current task. Do NOT load all files at once
 | Service Affinity Matrix | [service-affinity.md](service-affinity.md) | When checking which services work together or have integration constraints |
 | Deployment Patterns | [deployment-patterns.md](deployment-patterns.md) | When designing deployment strategies — blue-green, canary, slots, rolling |
 | Anti-Patterns & Questions | [anti-patterns-questions.md](anti-patterns-questions.md) | When reviewing architectures for common mistakes or probing for gaps |
+| Anti-Patterns | [anti-patterns.md](anti-patterns.md) | When identifying broad architecture anti-patterns across reliability, security, cost, and operations |
+| Gotchas | [gotchas.md](gotchas.md) | When checking platform-specific surprises — networking, compute limits, pricing traps |
+| Best Practices | [best-practices.md](best-practices.md) | When establishing foundational practices — WAF alignment, networking, identity, IaC, monitoring |
+| Disaster Recovery Patterns | [disaster-recovery-patterns.md](disaster-recovery-patterns.md) | When designing DR strategies — active-active, active-passive, pilot light, backup & restore |

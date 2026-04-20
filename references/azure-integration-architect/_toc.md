@@ -1,6 +1,6 @@
 # Azure Integration Architect — Knowledge Index
 
-> **Last Updated:** 2025-07-18 — All chunks replaced with MCP-researched content.
+> **Last Updated:** 2026-04-19 — Added gotchas, best-practices, gap analysis.
 
 Load only the files relevant to your current task. Do NOT load all files at once.
 
@@ -15,3 +15,6 @@ Load only the files relevant to your current task. Do NOT load all files at once
 | Failure Design | [failure-design.md](failure-design.md) | When implementing retry, circuit breaker, compensation, or idempotency patterns |
 | Cost Model | [cost-model.md](cost-model.md) | When estimating integration service costs or optimizing spend |
 | Anti-Patterns | [anti-patterns.md](anti-patterns.md) | When reviewing integration designs for common mistakes |
+| Gotchas | [gotchas.md](gotchas.md) | When debugging surprising behaviors or hitting hidden limits in integration services |
+| Best Practices | [best-practices.md](best-practices.md) | When designing integration solutions — idempotency, sagas, retries, monitoring |
+| API-First Design | [api-first-design.md](api-first-design.md) | When designing APIs contract-first, setting up API governance, or using APIM as design platform |

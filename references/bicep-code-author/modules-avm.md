@@ -158,18 +158,28 @@ module networkFromSpec 'ts:mySubscription/networking-rg/vnet-standard:1.0' = {
 // az ts create --name vnet-standard --version 1.0 --resource-group networking-rg --template-file networking.bicep
 ```
 
-## Azure Verified Modules (AVM)
-AVM is the official Microsoft module library. Use AVM over writing your own when a module exists.
+## Azure Verified Modules (AVM) — Reference Only
+AVM is the official Microsoft module library. **Reference AVM for patterns and conventions, but write your own modules.** AVM modules are over-engineered for most use cases — they're excellent as reference implementations to study, but they inflate compiled template size, introduce unnecessary complexity, and make you dependent on Microsoft's release cadence. Write lean, purpose-built modules that include only what you need.
 
-### Finding AVM Modules
+### Why Reference-Only
+- AVM modules include every possible feature for a resource type, inflating compiled ARM JSON (often 10-20KB per module reference)
+- You can't strip unused features — they're always compiled into the template
+- Version updates may introduce breaking changes or unwanted defaults
+- Debugging issues inside AVM modules requires reading generated ARM JSON
+- **Study AVM for:** Security defaults, interface patterns, type definitions, naming conventions
+- **Write your own for:** Production deployments, lean templates, full control
+
+### Finding AVM for Reference
 - Browse: https://aka.ms/AVM/bicep/modules
 - Registry: `br/public:avm/res/<provider>/<resource-type>:<version>`
 - Pattern types:
   - `avm/res/` — Resource modules (single Azure resource + children)
   - `avm/ptn/` — Pattern modules (multi-resource patterns like landing zones)
 
-### AVM Resource Module Examples
+### AVM Resource Module Examples (Reference Patterns)
 ```bicep
+// Study these patterns for security defaults and interface design — then write your own
+
 // Key Vault with RBAC
 module keyVault 'br/public:avm/res/key-vault/vault:0.9.0' = {
   name: 'deploy-key-vault'
@@ -234,8 +244,9 @@ module identity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0
 }
 ```
 
-### AVM Pattern Module Example
+### AVM Pattern Module Example (Reference Only)
 ```bicep
+// Study pattern modules for multi-resource orchestration patterns
 // Landing zone pattern — deploys VNet, NSGs, route tables, peering
 module landingZone 'br/public:avm/ptn/network/hub-networking:0.3.0' = {
   name: 'deploy-hub-network'

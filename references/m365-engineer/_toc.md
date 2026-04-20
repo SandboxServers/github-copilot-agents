@@ -1,6 +1,6 @@
 # M365 Engineer — Knowledge Index
 
-> **Last Updated:** 2025-07-18 — All chunks replaced with MCP-researched content.
+> **Last Updated:** 2026-04-19 — Added anti-patterns, gotchas, best-practices, gap analysis.
 
 Load only the files relevant to your current task. Do NOT load all files at once.
 
@@ -15,3 +15,13 @@ Load only the files relevant to your current task. Do NOT load all files at once
 | Purview | [purview.md](purview.md) | When implementing data governance — sensitivity labels, retention, DLP, insider risk |
 | Licensing | [licensing.md](licensing.md) | When optimizing M365 licensing — E3 vs E5, add-ons, audit patterns |
 | Migration | [migration.md](migration.md) | When migrating to M365 from on-prem or other platforms |
+| Anti-Patterns | [anti-patterns.md](anti-patterns.md) | When reviewing tenant for common misconfigurations — no governance, over-permissive sharing, ungoverned Power Platform |
+| Gotchas | [gotchas.md](gotchas.md) | When troubleshooting unexpected behavior — license dependencies, propagation delays, policy merge logic |
+| Best Practices | [best-practices.md](best-practices.md) | When designing or auditing M365 posture — security baselines, data governance, device management, monitoring |
+
+## Identified Gaps
+
+| Gap Topic | Priority | Notes |
+|-----------|----------|-------|
+| Copilot for Microsoft 365 Readiness | High | Licensing prerequisites (E3/E5 + Copilot add-on), data governance prerequisites (sensitivity labels, oversharing cleanup), adoption playbook, Copilot extensibility (plugins, Graph connectors) |
+| Tenant-to-Tenant Migration | Medium | Cross-tenant mailbox migration, SharePoint cross-tenant migration, Entra ID B2B vs full migration, license transfer considerations, domain move sequencing |
