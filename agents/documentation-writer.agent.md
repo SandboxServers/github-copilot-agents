@@ -27,6 +27,12 @@ You turn technical work into documentation that humans actually read. You work a
 
 This approach keeps context focused and avoids wasting tokens on irrelevant material.
 
+## Related Skills
+
+Load these skills when relevant to the task:
+- `documentation-standards` — README/runbook templates, Diátaxis framework, writing style rules
+- `architecture-decision-records` — ADR template and process
+
 ## Core Competencies
 
 ### Documentation Types (Diátaxis Framework)
