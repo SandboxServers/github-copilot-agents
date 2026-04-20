@@ -33,8 +33,8 @@ github-copilot-agents/
 │   │   └── [other topic chunks...]
 │   ├── azure-compute-engineer/
 │   └── [27 more agent memory folders...]
-├── skills/                      # (Future) Reusable cross-agent playbooks
-│   └── [skill definitions]
+├── skills/                      # Reusable cross-agent playbooks and checklists
+│   └── {skill-name}.skill/SKILL.md
 ├── prompts/                     # System prompts and shared instruction templates
 └── .github/
     └── copilot-instructions.md  # VS Code Copilot workspace instructions
@@ -197,16 +197,36 @@ Agents have access to:
 
 These are specified in the `tools:` array of each agent's YAML frontmatter.
 
-## Building Skills (Future)
+## Skills
 
-Skills are reusable playbooks, checklists, and decision trees used by multiple agents. Examples:
+Skills are reusable playbooks, checklists, and decision trees used by multiple agents. Each skill lives in `skills/{skill-name}.skill/SKILL.md` with YAML frontmatter (`name`, `description`, `when-to-use`, `categories`).
 
-- **IaC Review Checklist** — Used by Terraform Author, Bicep Author, Security Analyst, Testing Engineer
-- **Architecture Decision Records** — Used by architects and leads when capturing design decisions
-- **Pipeline Quality Gates** — Used by CI/CD architects and DevOps lead to standardize pipeline expectations
-- **Migration Playbook** — Used by migration specialist and CI/CD architects for ADO→GitHub migrations
+### Current Skills (20)
 
-Skills live in `skills/` and are referenced in agents' knowledge sections or prompts.
+| Skill | Description |
+|---|---|
+| `iac-review` | Infrastructure code review checklist (Terraform, Bicep, K8s, CloudFormation) |
+| `architecture-decision-records` | ADR template and process |
+| `observability-baseline` | Logging, metrics, tracing, and alerting standards |
+| `pipeline-quality-gates` | Azure Pipelines and GitHub Actions quality gate configuration |
+| `security-review-framework` | Threat modeling and security review checklist |
+| `terraform-style-guide` | Terraform naming, formatting, file organization, PR checklist |
+| `bicep-style-guide` | Bicep naming, file layout, decorators, PR rejection criteria |
+| `powershell-style-guide` | PowerShell naming, splatting, error handling, function template |
+| `testing-strategy` | Test pyramid, quality gates, shift-left, anti-patterns |
+| `api-design-standards` | Contract-first workflow, REST conventions, versioning, error responses |
+| `error-handling-patterns` | Retry, circuit breaker, saga, dead-letter, idempotency |
+| `naming-conventions` | Azure resources, Terraform, Bicep, PowerShell naming standards |
+| `documentation-standards` | README/runbook templates, Diátaxis framework, writing style |
+| `infrastructure-testing` | Terraform/Bicep testing pyramid, CI pipeline integration |
+| `cost-optimization-checklist` | Waste elimination, right-sizing, commitment discounts |
+| `disaster-recovery-planning` | DR patterns with RTO/RPO tradeoffs, failover testing |
+| `network-security-design` | Private endpoints, NSGs, zero trust, WAF, common findings |
+| `secrets-management-audit` | Auth hierarchy, Key Vault config, rotation, detection |
+| `database-migration-checklist` | SQL/PostgreSQL/MySQL/Cosmos migration workflows |
+| `kubernetes-security-hardening` | AKS cluster, pod, network, and image security |
+
+Skills are referenced in agents' `## Related Skills` sections and in `agent-memory/_toc.md` files.
 
 **When to create a skill**: The pattern is used by 3+ agents OR saves significant duplication across the codebase.
 
@@ -256,7 +276,8 @@ For Claude Code:
 3. Test that handoffs and sub-agents still make sense
 
 ### Create a cross-cutting skill
-1. Create `skills/skill-name.skill.md` with standard structure
+1. Create `skills/{skill-name}.skill/SKILL.md` with YAML frontmatter (`name`, `description`, `when-to-use`, `categories`)
 2. Document which agents should use it and when
-3. Reference from relevant agents' knowledge sections
-4. Link in README under "Shared Skills"
+3. Add to `## Related Skills` in relevant agent `.agent.md` files
+4. Add to `## Related Skills` in relevant `agent-memory/_toc.md` files
+5. Update the skills table in this file
