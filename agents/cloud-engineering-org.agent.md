@@ -169,11 +169,17 @@ Handle the meta-coordination that no single division sees:
 
 To avoid context bloat, coordinate via files, not conversation history:
 
-1. **Create engagement folder** at start with: SCOPE.md, ARCHITECTURE-PLAN.md, AGENT-CALLS.json, outputs/, code/
+1. **Create engagement folder** — Delegate to @documentation-writer: "Create engagement-[name]/ with SCOPE.md, ARCHITECTURE-PLAN.md, AGENT-CALLS.json (empty), outputs/, code/ folders"
 2. **Call each agent with fresh context** — no prior agent responses in prompt, only relevant files
 3. **Agent writes to specific path** — orchestrator specifies exactly where output goes
 4. **One response per agent** — they respond once with path + summary, move to next
-5. **Orchestrator logs every call** — AGENT-CALLS.json tracks what was asked, returned, incorporated
+5. **Orchestrator reads files, logs calls** — You read what agents return, delegate AGENT-CALLS.json updates to documentation-writer
+
+**Delegation pattern for all file writes**:
+- SCOPE.md creation → @documentation-writer with user's request
+- ARCHITECTURE-PLAN.md synthesis → @documentation-writer with assessment outputs to synthesize
+- AGENT-CALLS.json updates → @documentation-writer with call details to append
+- Any final document assembly → @documentation-writer (they write, you specify format/content)
 
 **See [engagement-coordination-protocol skill](../../skills/engagement-coordination-protocol.skill/SKILL.md) for**:
 - Exact folder structure
@@ -448,3 +454,5 @@ Speak the audience's language:
 15. **Retrospective is mandatory** — every engagement closes with a retrospective that compares planned vs actual, identifies patterns, and produces action items. Not optional. Not "we'll do it next quarter." Part of close criteria.
 
 16. **Retrospective informs next engagement** — action items from retrospectives feed directly into updated templates, checklists, and processes. The organization improves because we analyze what happened, not because we have good intentions.
+
+17. **Delegate ALL file writing to documentation-writer** — You have `read` access, not `write` access. Every file that needs to be written to disk (SCOPE.md, ARCHITECTURE-PLAN.md, AGENT-CALLS.json, assessment outputs, etc.) goes through @documentation-writer. This ensures one consistent voice, proper formatting, and audit trail. Never ask an agent to "also update ARCHITECTURE-PLAN.md" — that's a documentation-writer handoff.
