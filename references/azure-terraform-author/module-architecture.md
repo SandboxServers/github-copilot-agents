@@ -5,34 +5,19 @@
 - **Pattern Modules**: Compose multiple resource modules into an architecture pattern (e.g., hub-spoke network, web app + database + KV). Higher-level abstractions.
 - **Root Modules**: The top-level configuration that calls modules and configures providers/state. Not designed for reuse.
 
-## Azure Verified Modules (AVM)
-Microsoft's official Terraform module library. Use AVM when:
-- A module exists for your resource
-- You need a well-tested, maintained baseline
-- Compliance and governance patterns are important
+## Azure Verified Modules (AVM) — Reference Only
+Microsoft's official Terraform module library. AVM modules are over-engineered for most use cases — they include extensive abstractions, deep nesting, and opinionated patterns that add complexity without proportional value. **Reference AVM for patterns but write your own modules.**
 
-```hcl
-# Using AVM from the Terraform registry
-module "key_vault" {
-  source  = "Azure/avm-res-keyvault-vault/azurerm"
-  version = "~> 0.9"
+### How to Use AVM
+- **Study AVM source code** to learn patterns: variable design, validation, output structure, testing approaches
+- **Do NOT use AVM modules directly** in production — they are heavyweight and hard to customize
+- Browse the [AVM registry](https://registry.terraform.io/namespaces/Azure) for reference implementations
 
-  name                = "${local.name_prefix}-kv"
-  resource_group_name = azurerm_resource_group.main.name
-  location            = azurerm_resource_group.main.location
-  tenant_id           = data.azurerm_client_config.current.tenant_id
-  
-  enable_rbac_authorization = true
-  
-  tags = local.common_tags
-}
-```
-
-### When to Write Custom Instead
-- AVM module doesn't exist for the resource
-- AVM module is too opinionated for your use case
-- You need features the AVM module doesn't expose
-- Performance: AVM modules can be heavyweight for simple resources
+### Why We Write Custom
+- **Simpler** — Our modules wrap exactly what we need, nothing more
+- **Controllable** — We own the interface, versioning, and upgrade path
+- **Debuggable** — Fewer abstraction layers when troubleshooting
+- **Performant** — Smaller plan/apply surface, faster execution
 
 ## Module Directory Structure
 ```
@@ -65,8 +50,8 @@ modules/
 ```hcl
 # 1. Terraform Registry (public or private) — preferred for versioned modules
 module "network" {
-  source  = "Azure/avm-res-network-virtualnetwork/azurerm"
-  version = "~> 0.4"
+  source  = "myorg/virtual-network/azurerm"
+  version = "~> 2.0"
 }
 
 # 2. Git repository (with tag-based versioning)
