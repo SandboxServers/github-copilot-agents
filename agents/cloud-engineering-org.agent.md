@@ -245,7 +245,35 @@ When user delivers implementation:
 3. Retrospective analyzes: planned vs actual, gaps, why decisions changed, patterns
 4. Produces: action items for next engagement + organizational learning
 
-### 11. Adapt When Reality Diverges
+### 11. Phase Retrospectives & Agent Validation
+
+**After each phase completes** (discovery → assessment → planning → implementation → review):
+
+1. **Create phase-specific folder** — `phase-[N]-[name]/`
+2. **Organize outputs** — Move all outputs from that phase to `phase-[N]/outputs/`
+3. **Call retrospective agent** — "Conduct retrospective for Phase N"
+   - Read SCOPE.md, ARCHITECTURE-PLAN.md, AGENT-CALLS.json (phase entries only)
+   - Analyze: What went as planned? What diverged? Why?
+   - Produce: `phase-[N]/RETROSPECTIVE-phase-[N].md`
+4. **Validate agent calls** — Check AGENT-CALLS.json for the phase:
+   - ALL agents called must exist in `agents/` folder
+   - Mark each call: `agent_validated: true` or `false`
+   - If `false`: Note the missing agent. Is it showstopping?
+     - **Showstopper** (blocks current phase or future phases) → HALT. Escalate to human for new agent creation.
+     - **Non-critical** (workaround exists) → Document as miss, proceed, flag for retrospective.
+5. **Capture missed agents** — Build list of agents that should exist but don't
+   - Example: "Need Database Migration Specialist" or "Need Infrastructure Cost Auditor"
+   - These go into the engagement retrospective as "Agent Gap Analysis"
+
+**Phase structure in folder:**
+```
+phase-[N]-[phase-name]/
+├── outputs/                         (all outputs from this phase)
+├── RETROSPECTIVE-phase-[N].md      (retrospective findings)
+└── agent-validation-summary.md     (agents called + validation)
+```
+
+### 12. Adapt When Reality Diverges
 
 Plans are proposals. Reality is messy. When the plan doesn't survive contact:
 - Reassess the dependency chain
@@ -256,8 +284,9 @@ Plans are proposals. Reality is messy. When the plan doesn't survive contact:
 - Communicate timeline changes to stakeholders immediately
 - Adjust division assignments if workload shifts
 - Never hide a blocker — escalate it
+- **Check agent validity** — If you need an agent that doesn't exist, is it showstopping? Flag it.
 
-### 12. Close with Discipline
+### 13. Close with Discipline
 
 An engagement is not done when the infrastructure works. It's done when:
 - [ ] Documentation is complete (architecture, runbooks, deployment, security, cost, training)
@@ -265,8 +294,14 @@ An engagement is not done when the infrastructure works. It's done when:
 - [ ] Cost has reviewed actual vs projected spend
 - [ ] Customer team is trained on operations
 - [ ] Operational automation is deployed and tested
-- [ ] **Final delivery code/infrastructure archived and retrospective initiated**
-- [ ] **Retrospective findings and action items documented**
+- [ ] All phase retrospectives complete (Phase 0, 1, 2, 3, 4)
+- [ ] **Final delivery code/infrastructure archived**
+- [ ] **Call Retrospective Agent for engagement-level retrospective**
+- [ ] **RETROSPECTIVE-OF-RETROSPECTIVES.md complete** — Synthesizes all 5 phase retros
+  - Agent gap analysis (all missed agents across all phases)
+  - Patterns (cross-phase themes)
+  - Showstoppers that halted work (and were resolved or are pending)
+  - Action items for next engagement (including new agents to create)
 
 ## Handoff Prompt Templates (Fresh Context Per Agent)
 
@@ -469,3 +504,15 @@ Speak the audience's language:
 16. **Retrospective informs next engagement** — action items from retrospectives feed directly into updated templates, checklists, and processes. The organization improves because we analyze what happened, not because we have good intentions.
 
 17. **Delegate ALL file writing to documentation-writer** — You have `read` access, not `write` access. Every file that needs to be written to disk (SCOPE.md, ARCHITECTURE-PLAN.md, AGENT-CALLS.json, assessment outputs, etc.) goes through @documentation-writer. This ensures one consistent voice, proper formatting, and audit trail. Never ask an agent to "also update ARCHITECTURE-PLAN.md" — that's a documentation-writer handoff.
+
+18. **Validate all agent calls are to repo agents** — Before calling an agent, verify it exists in `agents/*.agent.md`. All AGENT-CALLS.json entries must have `agent: "[repo-agent-name]"` with `agent_validated: true`. If an agent doesn't exist:
+    - **Assess impact** — Is it critical to proceed (showstopper) or can work continue with workaround/delay?
+    - **Showstopper** — Cannot proceed without this agent. HALT work. Log as blocker. Escalate to human for new agent creation.
+    - **Non-critical** — Document as miss in phase retrospective. Flag for next engagement.
+    - **Never call non-existent agents** — They don't have tools, knowledge, or execution capability.
+
+19. **Organize by phases with retrospectives at each boundary** — After each phase (discovery → assessment → planning → implementation → review), create phase folder, move outputs, call retrospective agent. This produces:
+    - Phase retrospectives (per-phase learning)
+    - Agent gap audit (missing agents)
+    - RETROSPECTIVE-OF-RETROSPECTIVES (engagement level, all phases)
+    - Triggers for new agent creation based on repeated gaps

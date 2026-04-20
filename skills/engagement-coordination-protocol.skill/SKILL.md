@@ -34,7 +34,7 @@ Standard protocol for multi-agent engagements. Ensures all agents follow the sam
 
 ## Engagement Folder Structure
 
-Create this folder structure at engagement start. All agents reference these paths.
+Create this folder structure at engagement start. All agents reference these paths. **Engagement is organized by phases**, with retrospectives at each phase boundary and a final retrospective-of-retrospectives at close.
 
 ```
 engagement-[name]/
@@ -47,56 +47,76 @@ engagement-[name]/
 ├── ARCHITECTURE-PLAN.md
 │   What: Final specification (what we're building, why, constraints met)
 │   Owner: Orchestrator agent (synthesized from all division assessments)
-│   Created: After all initial assessments complete
+│   Created: After all initial assessments complete (Phase 1)
 │   Purpose: This is the contract with the user. Everything measured against this.
 │
 ├── AGENT-CALLS.json
-│   What: Audit log of every agent call
+│   What: Audit log of every agent call (includes phase field)
 │   Format: [See AGENT-CALLS.json Format section below]
 │   Owner: Orchestrator agent (maintains throughout engagement)
-│   Purpose: Decision trail for retrospective analysis
+│   Purpose: Decision trail for retrospective analysis; validation that all calls are to repo agents
 │
-├── IMPLEMENTATION-TASKS.md
-│   What: What each team will build (from ARCHITECTURE-PLAN)
-│   Owner: Orchestrator agent
-│   Format: | Component | Owner | Deliverable | Due |
+├── phase-0-discovery/                  ← PHASE 0: DISCOVERY
+│   ├── outputs/
+│   │   ├── infrastructure-discovery.md (current-state baseline)
+│   │   └── [other discovery outputs]
+│   └── RETROSPECTIVE-phase-0.md        (phase retrospective)
 │
-├── outputs/
-│   What: Assessment/review outputs from all agents
-│   Structure:
-│   ├── [division]-outputs.md          (assessments from division leads)
-│   ├── [specialist]-outputs.md        (specialist domain outputs)
-│   ├── security-review.md             (security findings)
-│   ├── cost-review.md                 (cost estimate + approval)
-│   ├── security-final-review.md       (final security sign-off)
-│   └── cost-final-review.md           (actual vs estimated cost)
+├── phase-1-assessment/                 ← PHASE 1: ASSESSMENT
+│   ├── outputs/
+│   │   ├── platform-outputs.md
+│   │   ├── devops-outputs.md
+│   │   ├── azure-specialty-outputs.md
+│   │   ├── identity-productivity-outputs.md
+│   │   ├── security-review.md
+│   │   └── cost-review.md
+│   └── RETROSPECTIVE-phase-1.md
 │
-├── code/
-│   What: Implementation artifacts
-│   Structure:
-│   ├── infrastructure/                (Terraform, Bicep)
-│   ├── pipelines/                     (YAML workflows)
-│   ├── automation/                    (PowerShell, scripts)
-│   └── README.md                      (how to deploy)
+├── phase-2-planning/                   ← PHASE 2: PLANNING
+│   ├── outputs/
+│   │   └── [planning outputs, architecture refinements]
+│   └── RETROSPECTIVE-phase-2.md
 │
-├── final-delivery/
-│   What: User-provided implementation (created when user delivers)
-│   Structure:
-│   ├── code/                          (actual delivered code)
-│   ├── infrastructure/                (actual deployed infrastructure)
-│   ├── documentation/                 (actual deliverables)
-│   └── FINAL-DELIVERY-MANIFEST.md    (what was built vs spec)
+├── phase-3-implementation/             ← PHASE 3: IMPLEMENTATION
+│   ├── code/
+│   │   ├── infrastructure/
+│   │   ├── pipelines/
+│   │   └── automation/
+│   ├── outputs/
+│   │   └── [implementation progress notes]
+│   └── RETROSPECTIVE-phase-3.md
 │
-└── RETROSPECTIVE.md
-    What: Post-engagement analysis (created by retrospective agent)
+├── phase-4-review-validation/          ← PHASE 4: REVIEW & VALIDATION
+│   ├── outputs/
+│   │   ├── security-final-review.md
+│   │   ├── cost-final-review.md
+│   │   └── testing-validation-report.md
+│   └── RETROSPECTIVE-phase-4.md
+│
+├── final-delivery/                     ← DELIVERY: User-provided implementation
+│   ├── code/
+│   ├── infrastructure/
+│   ├── documentation/
+│   └── FINAL-DELIVERY-MANIFEST.md
+│
+└── RETROSPECTIVE-OF-RETROSPECTIVES.md  ← ENGAGEMENT LEVEL: Synthesizes all phase retros
     Contents:
-    ├── Planned vs Actual comparison
-    ├── Gap analysis (why divergences)
-    ├── Decision audit trail
-    ├── Systemic patterns
+    ├── Phase 0-4 summary findings
+    ├── Planned vs Actual across all phases
+    ├── Systemic patterns (cross-phase)
+    ├── Agent call audit (all calls to repo agents?)
+    ├── Missed agents (gaps flagged during phases)
     ├── Action items for next engagement
-    └── Organizational learning (template updates)
+    └── Organizational learning
 ```
+
+**Phases:**
+- **Phase 0: Discovery** — Current state assessment, baselines
+- **Phase 1: Assessment** — Division leads assess from their perspectives
+- **Phase 2: Planning** — Synthesize into ARCHITECTURE-PLAN
+- **Phase 3: Implementation** — Code authors and specialists build
+- **Phase 4: Review & Validation** — Security, cost, testing sign-off
+- **Delivery & Retrospective** — User delivers, engage retrospective agent
 
 ---
 
@@ -152,8 +172,8 @@ Orchestrator maintains this log throughout engagement. Every agent call is recor
 **Log fields**:
 - `sequence` — Call number (1, 2, 3, etc.)
 - `timestamp` — When call was made
-- `agent` — Which agent was called
-- `phase` — assessment | implementation | review | retrospective
+- `agent` — Which agent was called (MUST be a repo agent; see Agent Validation below)
+- `phase` — discovery | assessment | planning | implementation | review | retrospective
 - `prompt_summary` — What was asked (1 line)
 - `input_files` — What files agent read
 - `output_path` — Where agent wrote output
@@ -162,6 +182,34 @@ Orchestrator maintains this log throughout engagement. Every agent call is recor
 - `what_was_rejected` — Which parts were not used and why
 - `blockers` — Any blockers agent reported
 - `status` — incorporated | rejected | pending | blocked
+- `agent_validated` — true (agent exists in repo) or false with miss explanation
+
+---
+
+## Agent Validation
+
+**CRITICAL**: All agent calls must be to agents defined in the repository (`agents/*.agent.md`).
+
+**During the engagement:**
+1. **Before calling** — Verify agent exists: check `agents/` folder or valid agent name
+2. **If agent doesn't exist** — This is an agent gap. Options:
+   - **Non-critical gap** — Note in AGENT-CALLS.json with `agent_validated: false`. Proceed with workaround or delay. Document in phase retrospective.
+   - **Showstopping gap** — Agent must exist to proceed. Log the miss with `blocker: "SHOWSTOP: Missing agent [name]"`. HALT work. Escalate to human for new agent creation.
+
+**Examples of gaps:**
+- Need a "Database Migration Specialist" but don't have one → note as miss, flag for new agent creation
+- Need "Infrastructure Cost Auditor" but can delegate to Cost Optimization Specialist → proceed with note
+- Need "Kubernetes Security Hardening" but don't have it → assess if showstopper or deferrable
+
+**In phase retrospectives:**
+- Tally all `agent_validated: false` entries
+- List each missing agent with: name, why it was needed, impact (deferred work? workaround?)
+- Mark as showstop if it blocked delivery
+
+**In engagement retrospective:**
+- "Missed agents" section — all gaps from all phases
+- Priority for next engagement: Create missing agents in priority order
+- Trigger for new agent creation if gap appears in multiple engagements
 
 ---
 
