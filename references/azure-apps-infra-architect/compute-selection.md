@@ -1,73 +1,70 @@
-# Compute Service Selection Matrix
+# Compute Selection
 
-## Decision Flow: Where Does This Workload Run?
+Decision matrix for Azure compute:
 
-```
-Is it a web app or API?
-├─ Yes → Does it need Kubernetes APIs or custom operators?
-│        ├─ Yes → AKS
-│        └─ No → Does it need microservice patterns (service discovery, Dapr, KEDA)?
-│                 ├─ Yes → Container Apps
-│                 └─ No → Is the team already on App Service?
-│                          ├─ Yes → App Service (Web App for Containers or code deploy)
-│                          └─ No → Container Apps (default modern choice)
-├─ Event-driven / short-lived?
-│  ├─ Yes → Azure Functions (Consumption for spiky, Premium for VNet/no cold start)
-│  └─ Scheduled jobs? → Container Apps Jobs or Azure Functions Timer
-├─ Batch / HPC?
-│  └─ Azure Batch or AKS with GPU node pools
-├─ Legacy / lift-and-shift / Windows services?
-│  └─ Azure VMs (consider VMSS for scale)
-└─ Static frontend?
-   └─ Static Web Apps (with Functions backend if needed)
-```
+| Service | Best For | Scaling | Min Monthly | Complexity |
+|---------|----------|---------|-------------|------------|
+| App Service | Web apps, APIs | Manual/auto, up to 30 instances (Standard), 100 (Premium) | ~$55 (B1) | Low |
+| Container Apps | Microservices, event-driven containers | KEDA-based, scale to zero | $0 (consumption) | Medium |
+| AKS | Complex microservices, teams with K8s expertise | HPA, cluster autoscaler, KEDA, NAP | ~$73 (B4ms node) | High |
+| Functions | Event processing, integrations | Per-execution, scale to zero | $0 (consumption) | Low |
+| VMs/VMSS | Legacy apps, full OS control, lift-and-shift | VMSS autoscale | ~$15 (B1s) | Medium |
 
-## Service Comparison Quick Reference
+## App Service
 
-| Factor | App Service | Container Apps | AKS | Functions |
-|--------|-------------|----------------|-----|-----------|
-| Operational overhead | Low | Low-Medium | High | Low |
-| Kubernetes API access | No | No | Yes | No |
-| Scale to zero | No (always-on plan) | Yes | Yes (KEDA) | Yes (Consumption) |
-| Custom domains/TLS | Built-in | Built-in | Manual/cert-manager | Built-in |
-| VNet integration | Yes (Premium+) | Yes (native) | Yes (native) | Yes (Premium) |
-| Deployment slots | Yes | Revisions + traffic split | Rolling/Blue-green | Slots (Premium) |
-| GPU support | No | Yes (preview) | Yes | No |
-| Windows containers | Yes | No | Yes | No |
-| Max scale | 30 instances (standard) | 300 replicas | Node limits | 200 instances |
-| Cold start concern | No | Yes (mitigate with min replicas) | No | Yes (Consumption) |
+**SKU Tiers:**
+- **Free/Shared**: Dev only. No custom TLS, no VNet, no slots. 60/240 CPU min/day limits.
+- **Basic (B1-B3)**: No autoscale, no slots. Small production workloads with predictable traffic.
+- **Standard (S1-S3)**: Autoscale up to 30 instances. 5 deployment slots. Backups. Custom domains + managed certs.
+- **Premium v3 (P0v3-P3mv3)**: Zone redundancy, up to 100 instances, enhanced performance. VNet integration.
+- **Isolated v2 (I1v2-I6v2)**: App Service Environment. Full network isolation. Compliance/regulatory requirements only.
 
-## SKU Selection Gotchas
+**When to choose:** Web apps, APIs, line-of-business apps. Teams wanting simplicity. Deployment slots for staging. Custom domains + managed certs. VNet integration for outbound.
 
-**App Service:**
-- Free/Shared: No custom domains with TLS, no VNet, no slots. Dev/test only.
-- Basic: No autoscale, no slots. Tiny workloads.
-- Standard: First tier with slots and autoscale. The starting point for production.
-- Premium v3: VNet integration, better perf, zone redundancy. Production default.
-- Isolated v2: Full network isolation (ASE). Compliance-driven only — expensive.
-- **Gotcha**: Scaling is per App Service Plan, not per app. One hot app starves the others.
-- **Gotcha**: Linux and Windows can't share a plan. Plan per OS.
-- **Gotcha**: Deployment slots share the plan's resources. Slot = same compute, not extra.
+**When NOT to choose:** Microservices that need independent scaling (scaling is per plan, not per app). Workloads needing scale-to-zero. Apps needing full OS control.
 
-**Container Apps:**
-- Consumption: Pay per vCPU-second. Scale to zero. Default for most workloads.
-- Dedicated (workload profiles): Predictable pricing, reserved compute. For steady-state.
-- **Gotcha**: Consumption has a 4 vCPU / 8 GiB max per container. Bigger = Dedicated.
-- **Gotcha**: No Windows container support. Windows workloads → App Service or AKS.
-- **Gotcha**: Custom domains require manual DNS validation. No auto-cert like App Service.
+**Key limits:** Linux and Windows apps cannot share a plan. Slots consume same plan resources (not additional compute). One runaway app starves siblings on same plan.
 
-**AKS:**
-- System node pool: Always on, runs kube-system. Min 1-3 nodes.
-- User node pools: Per-workload. Mix VM families. Spot pools for batch.
-- **Gotcha**: AKS is "free" but you pay for VMs. An idle 3-node cluster still costs ~$300/mo.
-- **Gotcha**: Version upgrades can break workloads. Test in staging. Use auto-upgrade channels carefully.
-- **Gotcha**: CNI vs kubenet networking is hard to change later. Decide at cluster creation.
+## Container Apps
 
-**Azure Functions:**
-- Consumption: Scale to zero, pay per execution. Cold starts 1-10s.
-- Flex Consumption: Improved cold starts, VNet, always-ready instances. New default.
-- Premium (EP): No cold starts, VNet, larger instances. Steady throughput.
-- Dedicated (App Service Plan): Use existing plan. No scale-to-zero.
-- **Gotcha**: Consumption plan has 5-10 minute execution limit (default). 10 min max.
-- **Gotcha**: Durable Functions state stored in Azure Storage — transaction costs add up at scale.
-- **Gotcha**: Function app deployment replaces all functions atomically. No per-function deploy.
+**Pricing models:**
+- **Consumption**: Pay per vCPU-second and GiB-second. Scale to zero. Default for variable workloads.
+- **Workload profiles (Dedicated)**: Reserved compute with predictable pricing. D4, D8, D16, D32 profiles and GPU options.
+
+**When to choose:** Microservices without K8s expertise. Event-driven architectures. Workloads that benefit from scale-to-zero. Dapr for service-to-service communication. Built-in HTTPS ingress. Revision-based traffic splitting.
+
+**When NOT to choose:** Need full Kubernetes API. Need Windows containers. Need more than 4 vCPU / 8 GiB per container on consumption. Custom operators or service meshes.
+
+**Key limits:** Consumption profile maxes at 4 vCPU / 8 GiB per container. No Windows container support. Max 100 revisions per app. Environment = shared boundary for networking and logging.
+
+## AKS
+
+**Architecture:** System + user node pools. Multiple VM families (CPU, GPU, memory-optimized). Azure CNI Overlay recommended for new clusters. Managed identity for cluster. Workload identity for pods.
+
+**When to choose:** Teams with Kubernetes expertise. Complex workloads needing custom operators, service meshes (Istio, Linkerd), GPU scheduling, or multi-tenant isolation. Need full K8s API access.
+
+**When NOT to choose:** Small teams without K8s experience. Simple web apps (use App Service). Microservices that don't need K8s-specific features (use Container Apps). Cost-sensitive workloads (idle cluster ~$300/month).
+
+**Key limits:** CNI choice is immutable after creation. Node pool VM SKU cannot be changed (create new pool and migrate). K8s version upgrades can break workloads. Azure Key Vault CSI driver for secrets. Microsoft Defender for Containers for security.
+
+## Functions
+
+**Pricing plans:**
+- **Consumption**: Scale to zero. Pay per execution (first 1M free). 5-min default / 10-min max timeout. Cold starts 1-10 seconds.
+- **Flex Consumption**: VNet support. Fast scaling with always-ready instances. Per-function scaling. Recommended new default.
+- **Premium (EP1-EP3)**: Pre-warmed instances (no cold starts). VNet integration. No timeout limit. Steady throughput workloads.
+- **Dedicated (App Service Plan)**: Use existing plan compute. No scale-to-zero. Legacy option.
+
+**When to choose:** Event processing, integrations, scheduled jobs, lightweight APIs, glue logic. Durable Functions for orchestrations (fan-out/fan-in, human interaction, chaining).
+
+**When NOT to choose:** Long-running processes on Consumption plan. Workloads needing persistent connections (WebSockets). Complex APIs better served by App Service or Container Apps.
+
+**Key limits:** Consumption execution time limits are strict. Deployment replaces all functions atomically. Durable Functions storage transactions add up at scale.
+
+## VMs / VMSS
+
+**When to choose:** Legacy applications that cannot be containerized. Lift-and-shift migrations. Workloads requiring specific OS configurations, kernel modules, or GPU drivers. Full OS control needed.
+
+**When NOT to choose:** New applications — always evaluate PaaS first. App Service, Container Apps, or Functions can almost always do it better with less operational burden.
+
+**Key limits:** You manage the OS, patching, security, networking. VMSS for horizontal scaling with autoscale rules. Availability Zones for HA. Spot VMs for fault-tolerant batch processing.
