@@ -281,6 +281,8 @@ Model is configured per-agent and is **not inherited** when one agent calls anot
 
 Skills are cross-agent playbooks, checklists, and decision frameworks that multiple agents reference. Each skill is discoverable and self-contained.
 
+**See [skills/README.md](./skills/README.md) for the complete skills directory, how to use them, and how to add new ones.**
+
 ### Key Skill: Engagement Coordination Protocol
 
 The **engagement-coordination-protocol** skill defines how agents coordinate multi-agent engagements without context bloat:
@@ -327,11 +329,12 @@ The retrospective agent analyzes SCOPE, ARCHITECTURE-PLAN, AGENT-CALLS, and fina
 │   │   ├── _toc.md               # Knowledge index with "when to load" guidance
 │   │   └── *.md                  # Topic-specific knowledge chunks
 │   └── ... (28 agent knowledge directories)
-├── skills/                       # Cross-agent reusable playbooks & checklists
+├── skills/                       # Cross-agent reusable playbooks & checklists (see skills/README.md)
+│   ├── README.md                   # Skills directory, how to use, how to add
 │   ├── engagement-coordination-protocol.skill/SKILL.md   # Multi-agent handoff protocol
-│   ├── pipeline-quality-gates.skill/SKILL.md
-│   ├── security-review-framework.skill/SKILL.md
-│   └── [17+ other skills]
+│   ├── agent-voice-guide.skill/SKILL.md
+│   ├── agent-consistency-audit.skill/SKILL.md
+│   └── [20+ other skills]
 ├── prompts/                      # Original persona prompts that seeded agents
 └── README.md
 ```

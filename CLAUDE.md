@@ -205,6 +205,8 @@ These are specified in the `tools:` array of each agent's YAML frontmatter.
 
 Skills are reusable playbooks, checklists, and decision trees used by multiple agents. Each skill lives in `skills/{skill-name}.skill/SKILL.md` with YAML frontmatter (`name`, `description`, `when-to-use`, `categories`).
 
+**See [skills/README.md](./skills/README.md) for the complete directory, how to use skills, and how to add new ones.**
+
 ### Current Skills (23)
 
 | Skill | Description | Type |
