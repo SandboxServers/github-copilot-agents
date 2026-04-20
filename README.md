@@ -14,74 +14,100 @@ Each `.agent.md` file in this repo is a VS Code custom agent. When placed in a w
 
 ## Architecture
 
+### Organizational Structure
+
 ```mermaid
 graph TB
-    subgraph org["Cloud Engineering Organization (Sonnet 4.6)"]
-        CEO[cloud-engineering-org]
+    CEO["🏢 Cloud Engineering Org<br/>(Orchestrator)"]
+    
+    subgraph leads["Division Leads"]
+        PEL["⚙️ Platform Engineering"]
+        DOL["🚀 DevOps"]
+        ASL["☁️ Azure Specialty"]
+        IPL["🔐 Identity & Productivity"]
     end
-
-    subgraph leads["Division Leads (Opus 4.6)"]
-        PEL[platform-engineering-lead]
-        DOL[devops-lead]
-        ASL[azure-specialty-lead]
-        IPL[identity-productivity-lead]
-    end
-
+    
     subgraph shared["Shared Services"]
-        SEC[security-compliance-analyst]
-        COST[cost-optimization-specialist]
-        DOC[documentation-writer]
-        PS[powershell-automation-dev]
-        TEST[testing-validation-engineer]
-        RETRO[retrospective-agent]
+        SEC["🔒 Security & Compliance"]
+        COST["💰 Cost Optimization"]
+        DOC["📝 Documentation"]
+        TEST["✅ Testing & Validation"]
+        RETRO["📊 Retrospective"]
     end
-
-    subgraph azure["Azure Specialty (Sonnet 4.6)"]
-        AI[azure-ai-specialist]
-        APPS[azure-apps-infra-architect]
-        COMP[azure-compute-engineer]
-        DATA[azure-data-engineer]
-        DB[azure-database-specialist]
-        INT[azure-integration-architect]
-        MON[azure-monitoring-engineer]
-        NET[azure-network-engineer]
-        STOR[azure-storage-engineer]
-    end
-
-    subgraph platform["Platform Engineering (mixed)"]
-        CAF[caf-evangelist]
-        LZ[landing-zone-specialist]
-        TF[azure-terraform-author]
-        BIC[bicep-code-author]
-    end
-
-    subgraph devops["DevOps (Opus 4.6)"]
-        APA[azure-pipelines-architect]
-        GHA[github-actions-architect]
-        MIG[ado-github-migration]
-    end
-
-    subgraph identity["Identity & Productivity (Sonnet 4.6)"]
-        ENTRA[entra-id-specialist]
-        TEAMS[teams-admin]
-        M365[m365-engineer]
-        PP[power-platform-engineer]
-    end
-
+    
     CEO --> PEL & DOL & ASL & IPL
-    CEO --> SEC & COST & DOC & PS & TEST & RETRO
+    CEO --> SEC & COST & DOC & TEST & RETRO
+```
 
+### Division Details
+
+#### Azure Specialty Division
+
+```mermaid
+graph LR
+    ASL["Azure Specialty Lead<br/>(Opus)"]
+    
+    subgraph specialists["Domain Specialists"]
+        AI["AI Specialist"]
+        COMP["Compute Engineer"]
+        DATA["Data Engineer"]
+        DB["Database Specialist"]
+        INT["Integration Architect"]
+        MON["Monitoring Engineer"]
+        NET["Network Engineer"]
+        STOR["Storage Engineer"]
+        APPS["Apps & Infra Architect"]
+    end
+    
     ASL --> AI & COMP & DATA & DB & INT & MON & NET & STOR & APPS
-    ASL --> COST & SEC
+```
 
-    DOL --> APA & GHA & MIG & TF
-    DOL --> COST & SEC & TEST & RETRO
+#### Platform Engineering Division
 
-    PEL --> APPS & LZ & CAF & TF & BIC
-    PEL --> COST & SEC & TEST & RETRO
+```mermaid
+graph LR
+    PEL["Platform Engineering Lead<br/>(Opus)"]
+    
+    subgraph platform["Specialists & Code Authors"]
+        CAF["CAF Evangelist"]
+        LZ["Landing Zone Specialist"]
+        TF["Terraform Author<br/>(Opus)"]
+        BIC["Bicep Author<br/>(Opus)"]
+    end
+    
+    PEL --> CAF & LZ & TF & BIC
+```
 
-    IPL --> ENTRA & TEAMS & M365
-    IPL --> COST & SEC
+#### DevOps Division
+
+```mermaid
+graph LR
+    DOL["DevOps Lead<br/>(Opus)"]
+    
+    subgraph devops["Specialists & Architects"]
+        MIG["ADO→GHA Migration<br/>(Opus)"]
+        APA["Azure Pipelines Architect<br/>(Opus)"]
+        GHA["GitHub Actions Architect<br/>(Opus)"]
+        TF["Terraform Author<br/>(Opus)"]
+    end
+    
+    DOL --> MIG & APA & GHA & TF
+```
+
+#### Identity & Productivity Division
+
+```mermaid
+graph LR
+    IPL["Identity & Productivity Lead<br/>(Opus)"]
+    
+    subgraph identity["Domain Specialists"]
+        ENTRA["Entra ID Specialist"]
+        TEAMS["Teams Admin"]
+        M365["M365 Engineer"]
+        PP["Power Platform Engineer"]
+    end
+    
+    IPL --> ENTRA & TEAMS & M365 & PP
 ```
 
 ## Agent Inventory
