@@ -92,11 +92,11 @@ Leads orchestrate work across multiple specialists. They decompose complex reque
 
 | Agent | Display Name | Sub-Agents | Knowledge Chunks |
 |-------|-------------|------------|-----------------|
-| `cloud-engineering-org` | Microsoft Cloud Engineering Organization | 10 agents (4 leads + 6 shared services) | 6 |
-| `azure-specialty-lead` | Azure Specialty Lead | 10 agents (9 Azure specialists + cost + security) | 7 |
-| `devops-lead` | DevOps Lead | 8 agents (3 CI/CD + terraform + cost/security/testing/retro) | 8 |
-| `platform-engineering-lead` | Platform Engineering Lead | 9 agents (architect + LZ + CAF + IaC + shared services) | 9 |
-| `identity-productivity-lead` | Identity & Productivity Lead | 5 agents (Entra + Teams + M365 + cost + security) | 7 |
+| `cloud-engineering-org` | Microsoft Cloud Engineering Organization | 10 agents (4 leads + 6 shared services) | 9 |
+| `azure-specialty-lead` | Azure Specialty Lead | 10 agents (9 Azure specialists + cost + security) | 10 |
+| `devops-lead` | DevOps Lead | 8 agents (3 CI/CD + terraform + cost/security/testing/retro) | 11 |
+| `platform-engineering-lead` | Platform Engineering Lead | 9 agents (architect + LZ + CAF + IaC + shared services) | 12 |
+| `identity-productivity-lead` | Identity & Productivity Lead | 5 agents (Entra + Teams + M365 + cost + security) | 10 |
 
 > Note: `cloud-engineering-org` runs on **Sonnet 4.6** — it's an orchestrator, not a domain expert. The sub-agents it calls use their own configured models.
 
@@ -106,18 +106,18 @@ These agents write, modify, and test code. They have `edit` and `execute` tool a
 
 | Agent | Display Name | Writes | Knowledge Chunks |
 |-------|-------------|--------|-----------------|
-| `azure-terraform-author` | Azure Terraform Author | Terraform HCL for Azure (azurerm, azapi, AVM) | 8 |
-| `bicep-code-author` | Bicep Code Author | Bicep templates, modules, parameter files | 8 |
-| `powershell-automation-dev` | PowerShell Automation Developer | PowerShell 7 scripts, Az modules, Graph SDK | 8 |
-| `azure-pipelines-architect` | Azure Pipelines Architect | Azure DevOps YAML pipelines | — |
-| `github-actions-architect` | GitHub Actions Architect | GitHub Actions workflows | — |
-| `testing-validation-engineer` | Testing & Validation Engineer | Pester, Terraform tests, Bicep validation, load tests | 9 |
+| `azure-terraform-author` | Azure Terraform Author | Terraform HCL for Azure (azurerm, azapi) | 12 |
+| `bicep-code-author` | Bicep Code Author | Bicep templates, modules, parameter files | 13 |
+| `powershell-automation-dev` | PowerShell Automation Developer | PowerShell 7 scripts, Az modules, Graph SDK | 14 |
+| `azure-pipelines-architect` | Azure Pipelines Architect | Azure DevOps YAML pipelines | 13 |
+| `github-actions-architect` | GitHub Actions Architect | GitHub Actions workflows | 13 |
+| `testing-validation-engineer` | Testing & Validation Engineer | Pester, Terraform tests, Bicep validation, load tests | 12 |
 
 ### Migration Specialist (Opus 4.6)
 
 | Agent | Display Name | Purpose | Knowledge Chunks |
 |-------|-------------|---------|-----------------|
-| `ado-github-migration` | Azure Pipelines → GitHub Actions Migration Specialist | Maps ADO pipelines to GitHub Actions, orchestrates the two CI/CD architects | — |
+| `ado-github-migration` | Azure Pipelines → GitHub Actions Migration Specialist | Maps ADO pipelines to GitHub Actions, orchestrates the two CI/CD architects | 12 |
 
 ### Domain SMEs (Sonnet 4.6)
 
@@ -125,25 +125,25 @@ These agents are researchers and advisors. They consult their knowledge base and
 
 | Agent | Display Name | Azure MCP Services | Knowledge Chunks |
 |-------|-------------|-------------------|-----------------|
-| `azure-ai-specialist` | Azure AI Specialist | foundry, search, cosmos, applicationinsights, monitor, pricing, keyvault, documentation | 7 |
-| `azure-apps-infra-architect` | Azure Apps & Infra Architect | appservice, containerapps, aks, functionapp, functions, compute, keyvault, wellarchitectedframework, pricing, monitor, documentation | 7 |
-| `azure-compute-engineer` | Azure Compute Engineer | compute, appservice, containerapps, aks, functions, monitor, pricing, wellarchitectedframework | 9 |
-| `azure-data-engineer` | Azure Data Engineer | appservice, storage, keyvault, monitor, pricing, wellarchitectedframework | 8 |
-| `azure-database-specialist` | Azure Database Specialist | — | 11 |
-| `azure-integration-architect` | Azure Integration Architect | — | 9 |
-| `azure-monitoring-engineer` | Azure Monitoring & Observability Engineer | — | 9 |
-| `azure-network-engineer` | Azure Network Engineer | — | 8 |
-| `azure-storage-engineer` | Azure Storage Engineer | storage, keyvault, monitor, pricing, wellarchitectedframework, documentation | 10 |
-| `caf-evangelist` | Cloud Adoption Framework Evangelist | wellarchitectedframework, pricing, policy, monitor | 7 |
-| `cost-optimization-specialist` | Cost Optimization Specialist | — | 8 |
-| `documentation-writer` | Documentation Writer | — | 7 |
-| `entra-id-specialist` | Entra ID Specialist | — | 9 |
-| `landing-zone-specialist` | Landing Zone Specialist | policy, monitor, pricing, wellarchitectedframework, documentation | 8 |
-| `m365-engineer` | Microsoft 365 Engineer | — | 9 |
-| `power-platform-engineer` | Power Platform Engineer | — | 9 |
-| `retrospective-agent` | Retrospective Agent | — | 8 |
-| `security-compliance-analyst` | Security & Compliance Analyst | — | 9 |
-| `teams-admin` | Microsoft Teams Administrator | — | 9 |
+| `azure-ai-specialist` | Azure AI Specialist | foundry, search, cosmos, applicationinsights, monitor, pricing, keyvault, documentation | 12 |
+| `azure-apps-infra-architect` | Azure Apps & Infra Architect | appservice, containerapps, aks, functionapp, functions, compute, keyvault, wellarchitectedframework, pricing, monitor, documentation | 11 |
+| `azure-compute-engineer` | Azure Compute Engineer | compute, appservice, containerapps, aks, functions, monitor, pricing, wellarchitectedframework | 13 |
+| `azure-data-engineer` | Azure Data Engineer | appservice, storage, keyvault, monitor, pricing, wellarchitectedframework | 12 |
+| `azure-database-specialist` | Azure Database Specialist | — | 15 |
+| `azure-integration-architect` | Azure Integration Architect | — | 12 |
+| `azure-monitoring-engineer` | Azure Monitoring & Observability Engineer | — | 13 |
+| `azure-network-engineer` | Azure Network Engineer | — | 12 |
+| `azure-storage-engineer` | Azure Storage Engineer | storage, keyvault, monitor, pricing, wellarchitectedframework, documentation | 13 |
+| `caf-evangelist` | Cloud Adoption Framework Evangelist | wellarchitectedframework, pricing, policy, monitor | 10 |
+| `cost-optimization-specialist` | Cost Optimization Specialist | — | 12 |
+| `documentation-writer` | Documentation Writer | — | 10 |
+| `entra-id-specialist` | Entra ID Specialist | — | 12 |
+| `landing-zone-specialist` | Landing Zone Specialist | policy, monitor, pricing, wellarchitectedframework, documentation | 11 |
+| `m365-engineer` | Microsoft 365 Engineer | — | 12 |
+| `power-platform-engineer` | Power Platform Engineer | — | 12 |
+| `retrospective-agent` | Retrospective Agent | — | 11 |
+| `security-compliance-analyst` | Security & Compliance Analyst | — | 15 |
+| `teams-admin` | Microsoft Teams Administrator | — | 12 |
 
 ## Knowledge Management
 
@@ -175,7 +175,7 @@ references/
 
 Each `_toc.md` includes a `Last Updated` timestamp so the agent knows how current its knowledge is. When knowledge is stale or the agent encounters a question beyond its chunks, it falls back to MS Learn MCP search for current documentation.
 
-**Total knowledge:** 231 chunk files across 28 reference directories.
+**Total knowledge:** 372 chunk files across 31 reference directories.
 
 ## Tool Access
 

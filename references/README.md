@@ -458,4 +458,4 @@ Content includes decision frameworks, comparison tables, configuration guidance,
 - **231** topic chunk files
 - **259** total files
 
-> **Last Updated:** 2026-04-19 — Content extracted from original monolithic knowledge files. No external research applied yet.
+> **Last Updated:** 2026-04-19 — Knowledge refined with anti-patterns, gotchas, best-practices, AVM stance update, and gap analysis across all 31 reference directories.
